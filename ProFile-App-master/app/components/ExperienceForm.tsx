@@ -45,7 +45,7 @@ const ExperienceForm: React.FC<Props> = ({ experience, setExperiences }) => {
                 <div className='flex justify-between'>
                     <input
                         type="text"
-                        placeholder='Nom complet'
+                        placeholder='Poste occupé'
                         value={newExperience.jobTitle}
                         onChange={(e) => handleChange(e, 'jobTitle')}
                         className='input input-bordered w-full'
@@ -84,7 +84,7 @@ const ExperienceForm: React.FC<Props> = ({ experience, setExperiences }) => {
                     />
                 </div>
                 <textarea
-                    placeholder='Description'
+                    placeholder='Description des missions et réalisations'
                     value={newExperience.description}
                     onChange={(e) => handleChange(e, 'description')}
                     className='input input-bordered w-full'

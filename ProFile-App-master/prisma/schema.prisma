@@ -3,100 +3,100 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" 
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String  @id @default(uuid())
-  email       String  @unique
-
-  profile UserProfile?
-  cv CV?
-  
-  isActive         Boolean  @default(false)
-  subscriptionID   String?
-  stripeCustomerId String?  @unique
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-model UserProfile {
-  id          String  @id @default(uuid())
-  userId      String  @unique
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  fullName    String?
-  phone       String?
-  address     String?
+  id          String   @id @default(uuid())
+  fullName    String
+  email       String   @unique
+  phone       String
+  address     String
+  linkedin    String
   photoUrl    String?
   description String?
   postSeeking String?
-
+  cv          Cv?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-model CV {
-  id          String @id @default(uuid())
-  userId      String @unique
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  experiences Experiences[]
-  education   Education[]
+model Cv {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  fullName    String
+  email       String
+  postSeeking String?
+  description String?
+  photoUrl    String?
+  pdfUrl      String?
+  user        User     @relation(fields: [userId], references: [id])
+  experiences Experience[]
+  educations  Education[]
   skills      Skill[]
   languages   Language[]
   hobbies     Hobby[]
-}
-
-model Experiences {
-  id          String @id @default(uuid())
-  cvId        String
-  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  jobTitle    String
-  companyName String
-  startDate   DateTime
-  endDate     DateTime?
-  description String
+  certifications Certification[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id         String   @id @default(uuid())
+  cvId       String
+  jobTitle   String
+  companyName String
+  startDate  DateTime
+  endDate    DateTime
+  description String?
+  tasks      Task[]
+  cv         Cv       @relation(fields: [cvId], references: [id])
+}
+model Task {
+  id String @id @default(uuid())
+  experienceId String
+  content String
+  experience Experience @relation(fields: [experienceId], references: [id])
 }
 
 model Education {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   cvId        String
-  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
   degree      String
   school      String
   startDate   DateTime
-  endDate     DateTime?
+  endDate     DateTime
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  cv          Cv       @relation(fields: [cvId], references: [id])
 }
 
 model Skill {
-  id      String @id @default(uuid())
-  cvId    String
-  cv      CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  name    String
-  createdAt DateTime @default(now())
+  id     String @id @default(uuid())
+  cvId   String
+  name   String
+  level  String
+  cv     Cv     @relation(fields: [cvId], references: [id])
 }
 
 model Language {
-  id          String @id @default(uuid())
-  cvId        String
-  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  name        String
-  proficiency String
-  createdAt   DateTime @default(now())
+  id           String @id @default(uuid())
+  cvId         String
+  name         String
+  proficiency  String
+  cv           Cv     @relation(fields: [cvId], references: [id])
 }
 
 model Hobby {
-  id      String @id @default(uuid())
-  cvId    String
-  cv      CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  name    String
-  createdAt DateTime @default(now())
+  id    String @id @default(uuid())
+  cvId  String
+  name  String
+  cv    Cv     @relation(fields: [cvId], references: [id])
+}
+
+model Certification {
+  id    String @id @default(uuid())
+  cvId  String
+  name  String
+  cv    Cv     @relation(fields: [cvId], references: [id])
 }

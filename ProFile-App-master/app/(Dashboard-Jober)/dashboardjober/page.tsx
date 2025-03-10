@@ -15,8 +15,6 @@ import { educationsPreset, experiencesPreset, hobbiesPreset, languagesPreset, pe
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import confetti from 'canvas-confetti';
-import { publishCv } from '@/app/actions';
-import { toast,  } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CvTemplatesselector from '@/app/components/CvTemplatesselector';
 import Preview from '@/app/components/templates/Preview';
@@ -43,7 +41,6 @@ const Page = () => {
 
   const [theme, setTheme] = useState<string>('forest')
   const [zoom, setZoom] = useState<number>(155)
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const defaultImageUrl = '/Avatar1.jpg'
     fetch(defaultImageUrl)
@@ -153,7 +150,7 @@ const Page = () => {
     }
   }
   
-  const [selectedTemplate, setSelectedTemplate] = useState("Modele Default");
+  const [selectedTemplate, setSelectedTemplate] = useState("Modèle Squares");
 
   
   
@@ -173,48 +170,7 @@ const Page = () => {
     return null
   }
 
-  const handleSubmit = async () => {
-    try {
-      if (!user?.id || !personalDetails) {
-        toast.error("Données utilisateur manquantes !");
-        return;
-      }
-
-      const cvData = {
-        userId: user.id,
-        fullName: personalDetails.fullName || "",
-        email: personalDetails.email || "",
-        postSeeking: personalDetails.postSeeking || "",
-        description: personalDetails.description || "",
-        photoUrl: personalDetails.photoUrl || "",
-        cvdata: {
-          experiences: experiences || [],
-          educations: educations || [],
-          languages: languages || [],
-          skills: skills || [],
-          hobbies: hobbies || [],
-        },
-      };
-
-      console.log("Données envoyées :", cvData);
-      setLoading(true);
-
-      // Appel de l'action serveur
-      const data = await publishCv(cvData);
-
-      if (data) {
-        toast.success("CV publié avec succès !");
-      } else {
-        toast.error("La publication du CV a échoué.");
-      }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Erreur lors de la publication du CV :", error.message);
-      toast.error(`Erreur : ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  
   
   
   
@@ -227,7 +183,7 @@ const Page = () => {
         <section className='flex items-center h-screen w-full bg-base-200'>
 
           {/**Sidebar de modification du CV */}
-          <div className='w-1/4 h-full p-8 bg-base-200 scrollable no-scrollbar'>
+          <div className='w-1/4 h-full py-8 px-6 bg-base-200 scrollable no-scrollbar'>
             <div className="mb-2 flex justify-between items-center text-teal-700">
               <p className='text-lg font-bold'>Bienvenue, {user.firstName} !</p>
               <button className="btn bg-teal-700 text-white hover:border-teal-600 hover:bg-teal-950" onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
@@ -327,7 +283,7 @@ const Page = () => {
               </div>
               <div className="w-full">
                   <div className="flex justify-between items-center">
-                    <h1 className="badge border-teal-700 text-teal-700 font-semibold p-3 badge-outline">Loisirs</h1>
+                    <h1 className="badge border-teal-700 text-teal-700 font-semibold p-3 badge-outline">Vos Certifications</h1>
                     <button
                       onClick={handleResetHobbies}
                       className="btn bg-teal-700 hover:bg-red-500 btn-sm">
@@ -518,11 +474,9 @@ const Page = () => {
                   <ArrowDownToLine className='w-4' />
                 </button>
                 <button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className={`btn bg-teal-700 text-white hover:bg-teal-950 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className="btn bg-teal-700 text-white hover:bg-teal-950"
                 >
-                  {loading ? "Publication..." : "Publier"}
+                  Publier
                   <Send className="w-4 ml-2" />
                 </button>
                

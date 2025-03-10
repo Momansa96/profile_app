@@ -28,8 +28,8 @@ const Navbar = () => {
         if (!email) return;
     
         checkAndAddUser(email)
-            .then(() => console.log(`✅ Utilisateur vérifié : ${email}`))
-            .catch(error => console.error("❌ Erreur dans useEffect :", error));
+            .then(() => console.log(`Utilisateur vérifié : ${email}`))
+            .catch(error => console.error("Une erreur est survenue dans useEffect :", error));
     }, [user]);
 
     if (!isLoaded) return null; 
