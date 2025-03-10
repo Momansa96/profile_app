@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" 
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String  @id @default(uuid())
+  email       String  @unique
+
+  profile UserProfile?
+  cv CV?
+  
+  isActive         Boolean  @default(false)
+  subscriptionID   String?
+  stripeCustomerId String?  @unique
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model UserProfile {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fullName    String?
+  phone       String?
+  address     String?
+  photoUrl    String?
+  description String?
+  postSeeking String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model CV {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  experiences Experiences[]
+  education   Education[]
+  skills      Skill[]
+  languages   Language[]
+  hobbies     Hobby[]
+}
+
+model Experiences {
+  id          String @id @default(uuid())
+  cvId        String
+  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  jobTitle    String
+  companyName String
+  startDate   DateTime
+  endDate     DateTime?
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id          String @id @default(uuid())
+  cvId        String
+  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  degree      String
+  school      String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id      String @id @default(uuid())
+  cvId    String
+  cv      CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  name    String
+  createdAt DateTime @default(now())
+}
+
+model Language {
+  id          String @id @default(uuid())
+  cvId        String
+  cv          CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  name        String
+  proficiency String
+  createdAt   DateTime @default(now())
+}
+
+model Hobby {
+  id      String @id @default(uuid())
+  cvId    String
+  cv      CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  name    String
+  createdAt DateTime @default(now())
+}
