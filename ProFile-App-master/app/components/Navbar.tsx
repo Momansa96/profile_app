@@ -25,9 +25,10 @@ const Navbar = () => {
 
     useEffect(() => {
         const email = user?.emailAddresses?.[0]?.emailAddress;
+        const fullName = user?.firstName + " " + user?.lastName;
         if (!email) return;
     
-        checkAndAddUser(email)
+        checkAndAddUser(email, fullName)
             .then(() => console.log(`Utilisateur vérifié : ${email}`))
             .catch(error => console.error("Une erreur est survenue dans useEffect :", error));
     }, [user]);

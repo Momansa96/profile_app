@@ -8,56 +8,57 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  fullName    String
-  email       String   @unique
-  phone       String
-  address     String
-  linkedin    String
-  photoUrl    String?
-  description String?
-  postSeeking String?
-  cv          Cv?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  fullName  String
+  email     String   @unique
+  role      String   @default("CANDIDAT") // "CANDIDAT" ou "RECRUTEUR"
+  cv        Cv?
+  emplois   Emploi[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Cv {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  fullName    String
-  email       String
-  postSeeking String?
-  description String?
-  photoUrl    String?
-  pdfUrl      String?
-  user        User     @relation(fields: [userId], references: [id])
-  experiences Experience[]
-  educations  Education[]
-  skills      Skill[]
-  languages   Language[]
-  hobbies     Hobby[]
+  id             String          @id @default(uuid())
+  userId         String          @unique
+  fullName       String
+  email          String
+  phone          String
+  linkedin       String?
+  address        String
+  postSeeking    String
+  description    String
+  photoUrl       String
+  pdfUrl         String?
+  user           User            @relation(fields: [userId], references: [id])
+  experiences    Experience[]
+  educations     Education[]
+  skills         Skill[]
+  languages      Language[]
+  hobbies        Hobby[]
   certifications Certification[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  candidatures   Candidature[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Experience {
-  id         String   @id @default(uuid())
-  cvId       String
-  jobTitle   String
+  id          String   @id @default(uuid())
+  cvId        String
+  jobTitle    String
   companyName String
-  startDate  DateTime
-  endDate    DateTime
+  startDate   DateTime
+  endDate     DateTime
   description String?
-  tasks      Task[]
-  cv         Cv       @relation(fields: [cvId], references: [id])
+  tasks       Task[]
+  cv          Cv       @relation(fields: [cvId], references: [id])
 }
+
 model Task {
-  id String @id @default(uuid())
+  id           String     @id @default(uuid())
   experienceId String
-  content String
-  experience Experience @relation(fields: [experienceId], references: [id])
+  content      String
+  experience   Experience @relation(fields: [experienceId], references: [id])
 }
 
 model Education {
@@ -72,31 +73,62 @@ model Education {
 }
 
 model Skill {
-  id     String @id @default(uuid())
-  cvId   String
-  name   String
-  level  String
-  cv     Cv     @relation(fields: [cvId], references: [id])
+  id    String @id @default(uuid())
+  cvId  String
+  name  String
+  level String
+  cv    Cv     @relation(fields: [cvId], references: [id])
 }
 
 model Language {
-  id           String @id @default(uuid())
-  cvId         String
-  name         String
-  proficiency  String
-  cv           Cv     @relation(fields: [cvId], references: [id])
+  id          String @id @default(uuid())
+  cvId        String
+  name        String
+  proficiency String
+  cv          Cv     @relation(fields: [cvId], references: [id])
 }
 
 model Hobby {
-  id    String @id @default(uuid())
-  cvId  String
-  name  String
-  cv    Cv     @relation(fields: [cvId], references: [id])
+  id   String @id @default(uuid())
+  cvId String
+  name String
+  cv   Cv     @relation(fields: [cvId], references: [id])
 }
 
 model Certification {
-  id    String @id @default(uuid())
-  cvId  String
-  name  String
-  cv    Cv     @relation(fields: [cvId], references: [id])
+  id   String @id @default(uuid())
+  cvId String
+  name String
+  cv   Cv     @relation(fields: [cvId], references: [id])
+}
+
+//Model relatif à l'espace Recruteur
+
+model Emploi {
+  id            String   @id @default(uuid())
+  jobTitle      String
+  companyName   String
+  locationJob   String
+  typeJob       String
+  description   String
+  salary        String?
+  datePublished DateTime @default(now())
+  status        String   @default("En attente") // Statut de l'offre d'emploi
+
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  candidatures Candidature[]
+}
+
+model Candidature {
+  id       String @id @default(uuid())
+  cvId     String
+  emploiId String
+  status   String @default("En attente") // Statut de la candidature
+
+  cv     Cv     @relation(fields: [cvId], references: [id])
+  emploi Emploi @relation(fields: [emploiId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

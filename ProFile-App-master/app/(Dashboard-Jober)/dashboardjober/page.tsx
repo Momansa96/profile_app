@@ -27,7 +27,7 @@ import ModelCubic from '@/app/components/templates/ModelCubic';
 import ModelGraphiste from '@/app/components/templates/ModelGraphiste';
 import ModelLumina from '@/app/components/templates/ModelLumina';
 import CertificationForm from '@/app/components/CertificateForm';
-
+import { saveCvData } from '@/app/actions';
 const Page = () => {
   
   const [personalDetails, setPersonalDetails] = useState<PersonalDetails>(personalDetailsPreset)
@@ -42,7 +42,7 @@ const Page = () => {
   const [theme, setTheme] = useState<string>('forest')
   const [zoom, setZoom] = useState<number>(155)
   useEffect(() => {
-    const defaultImageUrl = '/Avatar1.jpg'
+    const defaultImageUrl = '/Avatar3.jpg'
     fetch(defaultImageUrl)
       .then((res) => res.blob())
       .then((blob) => {
@@ -163,7 +163,34 @@ const Page = () => {
     setSelectedTemplate(template.name);
     
   };
-  
+  const handlePublish = async () => {
+    // Appeler la Server Action directement
+    try {
+        await saveCvData({
+            fullName: personalDetails.fullName,
+            email: personalDetails.email,
+            phone: personalDetails.phone,
+            address: personalDetails.address,
+            linkedin: personalDetails.linkedin,
+            description: personalDetails.description || '',
+            postSeeking: personalDetails.postSeeking || '',
+            photoUrl: personalDetails.photoUrl || '',
+            experiences: experiences.map(exp => ({
+                ...exp,
+                tasks: exp.tasks.map(task => ({ content: task }))
+            })) || [],
+            educations: educations,
+            skills: skills,
+            languages: languages,
+            hobbies: hobbies,
+            certifications: certification,
+        });
+        console.log('CV sauvegardé avec succès !');
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde du CV:', error);
+        // Gérer l'erreur (afficher un message à l'utilisateur, etc.)
+    }
+};
   
   const {isLoaded, isSignedIn, user} = useUser()
   if(!isSignedIn || !isLoaded) {
@@ -475,6 +502,7 @@ const Page = () => {
                 </button>
                 <button
                   className="btn bg-teal-700 text-white hover:bg-teal-950"
+                  onClick={handlePublish}
                 >
                   Publier
                   <Send className="w-4 ml-2" />

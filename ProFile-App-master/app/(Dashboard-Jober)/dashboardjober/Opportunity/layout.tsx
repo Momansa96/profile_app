@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <div className="flex flex-col h-screen  ">
+      <div className="flex flex-col   ">
         <Navbar />
         <main className="flex-1 px-5 md:px-[10%] py-2">{children}</main>
       </div>

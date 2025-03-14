@@ -2,7 +2,8 @@
 import { motion } from "framer-motion";
 import { Search, X, Bookmark, BookmarkCheck } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const opportunities = [
   {
     id: 1,
@@ -12,7 +13,8 @@ const opportunities = [
     type: "CDI",
     description: "Nous recherchons un développeur passionné pour rejoindre notre équipe technique.",
     salary: "40K€/an",
-    datePublished: "2025-03-01"
+    datePublished: "2025-03-01",
+    status: "En attente",
   },
   {
     id: 2,
@@ -22,7 +24,8 @@ const opportunities = [
     type: "Freelance",
     description: "Rejoignez notre équipe pour concevoir des interfaces innovantes et attrayantes.",
     salary: "Mission à partir de 3000€",
-    datePublished: "2025-02-25"
+    datePublished: "2025-02-25",
+    status: "En attente",
   },
   {
     id: 3,
@@ -32,7 +35,8 @@ const opportunities = [
     type: "CDD",
     description: "Nous recherchons un analyste de données pour interpréter des tendances complexes.",
     salary: "50K€/an",
-    datePublished: "2025-02-20"
+    datePublished: "2025-02-20",
+    status: "En attente",
   },
   {
     id: 4,
@@ -42,7 +46,8 @@ const opportunities = [
     type: "CDI",
     description: "Développez et animez notre communauté sur les réseaux sociaux.",
     salary: "35K€/an",
-    datePublished: "2025-02-15"
+    datePublished: "2025-02-15",
+    status: "En attente",
   },
   {
     id: 5,
@@ -52,7 +57,8 @@ const opportunities = [
     type: "CDI",
     description: "Nous recherchons un ingénieur DevOps pour optimiser notre infrastructure cloud.",
     salary: "55K€/an",
-    datePublished: "2025-02-10"
+    datePublished: "2025-02-10",
+    status: "En attente",
   },
   {
     id: 6,
@@ -62,7 +68,8 @@ const opportunities = [
     type: "Freelance",
     description: "Optimisez le référencement naturel de nos clients pour améliorer leur visibilité.",
     salary: "Mission à partir de 2500€",
-    datePublished: "2025-02-05"
+    datePublished: "2025-02-05",
+    status: "En attente",
   },
   {
     id: 7,
@@ -72,7 +79,8 @@ const opportunities = [
     type: "CDI",
     description: "Pilotez des projets digitaux d’envergure pour nos clients.",
     salary: "48K€/an",
-    datePublished: "2025-01-30"
+    datePublished: "2025-01-30",
+    status: "En attente",
   },
   {
     id: 8,
@@ -82,7 +90,8 @@ const opportunities = [
     type: "CDD",
     description: "Développez des applications mobiles performantes et ergonomiques.",
     salary: "45K€/an",
-    datePublished: "2025-01-25"
+    datePublished: "2025-01-25",
+    status: "En attente",
   },
   {
     id: 9,
@@ -92,7 +101,8 @@ const opportunities = [
     type: "CDI",
     description: "Mettez en place des stratégies marketing innovantes et efficaces.",
     salary: "50K€/an",
-    datePublished: "2025-01-20"
+    datePublished: "2025-01-20",
+    status: "En attente",
   },
   {
     id: 10,
@@ -102,7 +112,8 @@ const opportunities = [
     type: "Freelance",
     description: "Rédigez des contenus optimisés SEO pour nos clients.",
     salary: "Mission à partir de 2000€",
-    datePublished: "2025-01-15"
+    datePublished: "2025-01-15",
+    status: "En attente",
   },
   {
     id: 11,
@@ -112,7 +123,8 @@ const opportunities = [
     type: "CDI",
     description: "Assistez nos clients et résolvez leurs problèmes informatiques.",
     salary: "30K€/an",
-    datePublished: "2025-01-10"
+    datePublished: "2025-01-10",
+    status: "En attente",
   },
   {
     id: 12,
@@ -122,7 +134,8 @@ const opportunities = [
     type: "CDI",
     description: "Créez des visuels attractifs pour nos supports marketing et publicitaires.",
     salary: "38K€/an",
-    datePublished: "2025-01-05"
+    datePublished: "2025-01-05",
+    status: "En attente",
   },
   {
     id: 13,
@@ -132,7 +145,8 @@ const opportunities = [
     type: "CDI",
     description: "Analysez et renforcez la sécurité informatique de nos clients.",
     salary: "60K€/an",
-    datePublished: "2024-12-30"
+    datePublished: "2024-12-30",
+    status: "En attente",
   },
   {
     id: 14,
@@ -142,7 +156,8 @@ const opportunities = [
     type: "CDI",
     description: "Développez notre portefeuille client et boostez nos ventes.",
     salary: "45K€/an + primes",
-    datePublished: "2024-12-25"
+    datePublished: "2024-12-25",
+    status: "En attente",
   },
   {
     id: 15,
@@ -152,7 +167,8 @@ const opportunities = [
     type: "CDI",
     description: "Formez des étudiants et des professionnels aux nouvelles technologies.",
     salary: "42K€/an",
-    datePublished: "2024-12-20"
+    datePublished: "2024-12-20",
+    status: "En attente",
   },
   {
     id: 16,
@@ -162,7 +178,8 @@ const opportunities = [
     type: "CDI",
     description: "Développez des solutions d’intelligence artificielle innovantes.",
     salary: "70K€/an",
-    datePublished: "2024-12-15"
+    datePublished: "2024-12-15",
+    status: "En attente",
   },
   {
     id: 17,
@@ -172,7 +189,8 @@ const opportunities = [
     type: "Stage",
     description: "Assistez notre équipe RH dans le recrutement et la gestion administrative.",
     salary: "Indemnité : 900€/mois",
-    datePublished: "2024-12-10"
+    datePublished: "2024-12-10",
+    status: "En attente",
   },
   {
     id: 18,
@@ -182,7 +200,8 @@ const opportunities = [
     type: "CDI",
     description: "Gérez et développez notre activité de vente en ligne.",
     salary: "50K€/an",
-    datePublished: "2024-12-05"
+    datePublished: "2024-12-05",
+    status: "En attente",
   },
   {
     id: 19,
@@ -192,7 +211,8 @@ const opportunities = [
     type: "Freelance",
     description: "Créez des animations 3D pour nos productions multimédias.",
     salary: "Mission à partir de 4000€",
-    datePublished: "2024-12-01"
+    datePublished: "2024-12-01",
+    status: "En attente",
   },
   {
     id: 20,
@@ -202,7 +222,8 @@ const opportunities = [
     type: "CDI",
     description: "Accompagnez nos clients dans les questions juridiques liées au numérique.",
     salary: "55K€/an",
-    datePublished: "2024-11-25"
+    datePublished: "2024-11-25",
+    status: "En attente",
   },
 ];
 
@@ -214,6 +235,7 @@ export default function OpportunityPage() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [favorites, setFavorites] = useState<number[]>([]);
   const [sortBySidebar, setSortBySidebar] = useState(""); // État pour le tri de la sidebar ("recent" ou "oldest")
+  const [applications, setApplications] = useState<number[]>([]); // IDs des opportunités auxquelles le candidat a postulé
 
   useEffect(() => {
     // Charger les favoris depuis le localStorage au montage du composant
@@ -228,6 +250,18 @@ export default function OpportunityPage() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  useEffect(() => {
+    // Charger les candidatures depuis le localStorage au montage du composant
+    const storedApplications = localStorage.getItem('applications');
+    if (storedApplications) {
+      setApplications(JSON.parse(storedApplications));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Sauvegarder les candidatures dans le localStorage à chaque modification
+    localStorage.setItem('applications', JSON.stringify(applications));
+  }, [applications]);
 
   const toggleFavorite = (id: number) => {
     if (favorites.includes(id)) {
@@ -259,10 +293,24 @@ export default function OpportunityPage() {
     return 0;
   });
 
+  const handleApply = (id: number) => {
+    if (!applications.includes(id)) {
+      setApplications([...applications, id]);
+      toast.success("Candidature soumise avec succès !");
+    }
+    setSelectedOpportunity(null); // Fermer la modal après avoir postulé
+  };
+
+  const handleCancelApply = (id: number) => {
+    setApplications(applications.filter(appId => appId !== id));
+    toast.info("Candidature annulée.");
+};
+
   return (
     <div className='flex flex-col gap-2 h-screen'>
       <div className="container mx-auto no-scrollbar p-4 mt-14 flex gap-6 ">
-        {/* Sidebar */}
+      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+        {/* Sidebar Gauche */}
         <aside className="hidden md:block w-1/4 h-screen  no-scrollbar overflow-hidden bg-white p-4 rounded-lg shadow-md">
           <div className='flex flex-col bg-white z-20'>
             <div className="flex justify-between items-center mb-2 gap-2">
@@ -283,7 +331,7 @@ export default function OpportunityPage() {
           </div>
           <div className='flex flex-col gap-4 scrollable no-scrollbar overflow-hidden'>
             <div className="space-y-3 mt-2">
-              {sortedSidebarOpportunities.slice(-4).map((job) => (
+              {sortedSidebarOpportunities.slice(-2).map((job) => (
                 <div key={job.id} className="bg-gray-100 p-3 rounded-md shadow-sm hover:bg-gray-200 cursor-pointer" onClick={() => setSelectedOpportunity(job)}>
                   <h4 className="text-sm font-medium text-gray-800">{job.title}</h4>
                   <p className="text-xs text-gray-600">{job.company} - {job.location}</p>
@@ -314,9 +362,9 @@ export default function OpportunityPage() {
         </aside>
 
         {/* Contenu principal */}
-        <div className="w-full md:w-3/4 h-screen scrollable-preview no-scrollbar overflow-hidden">
+        <div className="w-full md:w-2/4 h-screen scrollable-preview no-scrollbar overflow-hidden relative">
           {/* Filtres */}
-          <div className="flex flex-wrap w-auto gap-4 mb-2 ">
+          <div className="flex flex-wrap w-auto gap-4 mb-2 absolute top-0 right-0  bg-white  z-1">
             <div className='flex gap-1 relative'>
               <input
                 type="text"
@@ -351,7 +399,7 @@ export default function OpportunityPage() {
           </div>
 
           {/* Liste des opportunités */}
-          <div className="grid md:grid-cols-2 gap-4 scrollable-preview no-scrollbar overflow-hidden  mt-2">
+          <div className="grid md:grid-cols-1 gap-4 scrollable-preview no-scrollbar overflow-hidden  mt-28">
             {filteredOpportunities.map((job) => (
               <div key={job.id} className="card bg-white shadow-md cursor-pointer hover:shadow-lg transition p-4 rounded-lg">
                 <div className="flex justify-between items-center">
@@ -373,6 +421,29 @@ export default function OpportunityPage() {
           </div>
         </div>
 
+        {/* Sidebar Droite (Suivi des Candidatures) */}
+        <aside className="hidden md:block w-1/4 h-screen no-scrollbar overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold mb-4 text-teal-600">Suivre mes candidatures</h3>
+          {applications.length > 0 ? (
+            opportunities
+              .filter((job) => applications.includes(job.id))
+              .map((job) => (
+                <div key={job.id} className="bg-white p-3 rounded-md shadow-sm mb-3 relative overflow-hidden">
+                  <span className="text-sm text-orange-500 rounded-badge px-1 border-2  border-orange-500 absolute top-1 right-1">
+                    {job.status === "En attente" ? "En attente" : "Accepté"}
+                  </span>
+                  <div className="my-8">
+                  <h4 className="text-sm font-medium text-gray-800">{job.title}</h4>
+                  <p className="text-xs text-gray-600">{job.company} - {job.location}</p>
+                  </div>
+                  <span className="text-md  px-2 cursor-pointer py-1  rounded-md absolute -left-1 -bottom-1 bg-red-400" onClick={() => handleCancelApply(job.id)}>Annuler</span>
+                </div>
+              ))
+          ) : (
+            <p className="text-sm text-gray-500">Aucune candidature pour le moment.</p>
+          )}
+        </aside>
+
         {/* Modal */}
         {selectedOpportunity && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -384,7 +455,7 @@ export default function OpportunityPage() {
               <p className="text-gray-600 mt-1">{selectedOpportunity.company} - {selectedOpportunity.location}</p>
               <p className="mt-2 text-gray-700">{selectedOpportunity.description}</p>
               <p className="text-teal-600 font-semibold mt-2">{selectedOpportunity.salary}</p>
-              <button className="btn btn-outline btn-teal-600 w-full mt-4">Postuler</button>
+              <button className="btn btn-outline btn-teal-600 w-full mt-4" onClick={() => handleApply(selectedOpportunity.id)}>Postuler</button>
             </motion.div>
           </div>
         )}

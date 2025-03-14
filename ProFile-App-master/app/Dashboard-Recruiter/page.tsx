@@ -1,73 +1,101 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Briefcase, Star, PlusCircle, X, UserSearch, UserCheck, CircleHelp, Bell, Filter, BookmarkPlus, BookmarkMinus, Mail, Eye, Pen, Trash2, Download, CirclePlus, CircleMinus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { getDataJober,  } from "../actions";
 
-const jobPositions = ["Développeur Web", "Designer UX/UI", "Chef de Projet", "Administrateur Réseau", "Analyste de Données"];
-const locations = ["Paris", "Lyon", "Marseille", "Télétravail"];
-const experiences = ["Débutant", "Intermédiaire", "Confirmé"];
-const candidateNames = ["Alice Dupont", "Jean Martin", "Sophie Bernard", "Thomas Leroy", "Nina Morel", "Lucas Dubois", "Emma Fontaine", "Matthieu Rousseau", "Isabelle Garnier", "David Lefevre", "Camille Blanchard", "Antoine Perrot", "Elodie Mercier", "Vincent Gauthier", "Caroline Lambert", "Guillaume Besson", "Julie Charpentier", "Pauline Richard", "Florent Chevalier", "Aurélie Noel"];
-const emails = ["monemail@gamil.com", "monemail2@gamil.com" ]
+
 
 type JobOffer = {
-    id: number;
-    title: string;
+    id: string;
+    jobTitle: string;
+    companyName: string;
+    locationJob: string;
+    typeJob: string;
     description: string;
-    location: string;
-    positionType: string;
-    experience: string;
+    salary?: string | null;
 };
 
 type Candidate = {
-    id: number;
-    name: string;
-    position: string;
-    location: string;
-    experience: string;
+    id: string;
+    fullName: string;
+    postSeeking: string | null;
+    address: string;
+    phone: string;
     email: string;
+    photoUrl: string | null;
+    linkedin: string;
+    description: string | null;
 };
 
-const candidates: Candidate[] = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    name: candidateNames[i],
-    position: jobPositions[i % jobPositions.length],
-    location: locations[i % locations.length],
-    experience: experiences[i % experiences.length],
-    email: emails[i],
-}));
+
 
 const RecruiterDashboard = () => {
+    const { user, isSignedIn } = useUser();
+    const userId = user?.id;
     const [search, setSearch] = useState("");
     const [selectedPosition, setSelectedPosition] = useState("");
     const [selectedLocation, setSelectedLocation] = useState("");
-    const [selectedExperience, setSelectedExperience] = useState("");
     const [favorites, setFavorites] = useState<Candidate[]>([]);
     const [activeTab, setActiveTab] = useState("candidates");
     const [showJobForm, setShowJobForm] = useState(false);
-    const [jobOffers, setJobOffers] = useState<JobOffer[]>([
-        {
-            id: 1,
-            title: "Développeur Fullstack",
-            description: "Recherche développeur fullstack React/Node.js",
-            location: "Paris",
-            positionType: "CDI",
-            experience: "Confirmé"
-        }
-    ]);
+    const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
     const [newJob, setNewJob] = useState<Omit<JobOffer, 'id'>>({
-        title: "",
+        jobTitle: "",
+        companyName: "",
+        locationJob: "",
+        typeJob: "",
         description: "",
-        location: "",
-        positionType: "CDI",
-        experience: ""
+        salary: ""
     });
     const [editingJob, setEditingJob] = useState<JobOffer | null>(null);
     const [previewJob, setPreviewJob] = useState<JobOffer | null>(null);
-    const [jobToDelete, setJobToDelete] = useState<number | null>(null);
+    const [jobToDelete, setJobToDelete] = useState<string | null>(null);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
+    useEffect(() => {
+        const fetchCandidates = async () => {
+            try {
+                const data = await getDataJober();
+                if (Array.isArray(data)) {
+                    // Correct mapping based on your schema
+                    const mappedCandidates: Candidate[] = data.map((item: unknown) => ({
+                        id: (item as Candidate).id,
+                        fullName: (item as Candidate).fullName,
+                        postSeeking: (item as Candidate).postSeeking || null,
+                        address: (item as Candidate).address,
+                        phone: (item as Candidate).phone,
+                        email: (item as Candidate).email,
+                        photoUrl: (item as Candidate).photoUrl || null,
+                        linkedin: (item as Candidate).linkedin,
+                        description: (item as Candidate).description || null
+                    }));
+                    setCandidates(mappedCandidates);
+                } else {
+                    console.error("Failed to fetch candidates");
+                }
+            } catch (error) {
+                console.error("Error fetching candidates:", error);
+            }
+        };
+
+        fetchCandidates();
+    }, []);
+
+    useEffect(() => {
+        const storedFavorites = localStorage.getItem("favorites");
+        if (storedFavorites) {
+            setFavorites(JSON.parse(storedFavorites));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    }, [favorites]);
+
     const toggleFavorite = (candidate: Candidate) => {
         setFavorites((prev) =>
             prev.some((fav) => fav.id === candidate.id)
@@ -75,10 +103,28 @@ const RecruiterDashboard = () => {
                 : [...prev, candidate]
         );
     };
+
+    useEffect(() => {
+        const fetchJobOffers = async () => {
+            if (!userId) {
+                console.error("Cet utilisateur n'est pas connecté");
+                return;
+            }
+            try {
+                const jobs = await getAllJobOffers(userId);
+                setJobOffers(jobs);
+            } catch (err) {
+                console.error("Erreur lors de la récupération des offres :", err);
+            }
+        };
+
+        fetchJobOffers();
+    }, [userId]);
+
     const initialCandidatures: Candidate[] = [
-        { id: 1, name: "Alice Dupont", position: "Développeur Web", location: "Paris", experience: "Débutant", email: "monemail@gmail.com" },
-        { id: 2, name: "Jean Martin", position: "Designer UX/UI", location: "Lyon", experience: "Intermédiaire", email: "monemail@gmail.com" },
-        { id: 3, name: "Sophie Bernard", position: "Chef de Projet", location: "Marseille", experience: "Confirmé", email: "monemail@gmail.com" },
+        { id: "1", fullName: "Alice Dupont", postSeeking: "Développeur Web", address: "Paris", phone: "", email: "monemail@gmail.com", photoUrl: null, linkedin: "", description: null },
+        { id: "2", fullName: "Jean Martin", postSeeking: "Designer UX/UI", address: "Lyon", phone: "", email: "monemail@gmail.com", photoUrl: null, linkedin: "", description: null },
+        { id: "3", fullName: "Sophie Bernard", postSeeking: "Chef de Projet", address: "Marseille", phone: "", email: "monemail@gmail.com", photoUrl: null, linkedin: "", description: null },
     ];
     const filteredCandidates = (activeTab === "candidates"
         ? candidates
@@ -88,45 +134,66 @@ const RecruiterDashboard = () => {
                 ? initialCandidatures // Affiche les candidatures si l'onglet est actif
                 : candidates // Par défaut, affiche tous les candidats
     ).filter((c) =>
-        c.name.toLowerCase().includes(search.toLowerCase()) &&
-        (selectedPosition ? c.position === selectedPosition : true) &&
-        (selectedLocation ? c.location === selectedLocation : true) &&
-        (selectedExperience ? c.experience === selectedExperience : true)
+        c.fullName.toLowerCase().includes(search.toLowerCase()) &&
+        (selectedPosition ? c.postSeeking === selectedPosition : true) &&
+        (selectedLocation ? c.address === selectedLocation : true)
     );
 
-    const handleJobSubmit = (e: React.FormEvent) => {
+    const handleJobSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (editingJob) {
-            setJobOffers(prev =>
-                prev.map(job =>
-                    job.id === editingJob.id ? { ...newJob, id: editingJob.id } : job
-                )
-            );
-        } else {
-            setJobOffers(prev => [...prev, { ...newJob, id: Date.now() }]);
+        if (!userId) {
+            console.error("User ID is missing");
+            return;
         }
 
-        setEditingJob(null);
-        setNewJob({
-            title: "",
-            description: "",
-            location: "",
-            positionType: "CDI",
-            experience: ""
-        });
-        setShowJobForm(false);
+        try {
+            if (editingJob) {
+                // Mettre à jour l'offre existante
+                if (newJob && typeof newJob === 'object') {
+                    const result = await updateJobOffer(editingJob.id.toString(), { ...newJob, salary: newJob.salary || undefined });
+                    setJobOffers((prev) =>
+                        prev.map((job) => (job.id === editingJob.id ? result : job))
+                    );
+                } else {
+                    console.error("New job data is missing or invalid");
+                }
+            } else {
+                // Créer une nouvelle offre
+                if (newJob && typeof newJob === 'object') {
+                    const result = await createJobOffer({ ...newJob, salary: newJob.salary || undefined }, userId);
+                    setJobOffers((prev) => [...prev, result]);
+                } else {
+                    console.error("New job data is missing or invalid");
+                }
+            }
+            setNewJob({ jobTitle: "", companyName: "", locationJob: "", typeJob: "", description: "", salary: "" });
+            setShowJobForm(false);
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement de l'offre :", error);
+        }
     };
 
-    const handleDeleteJob = () => {
+    const handleDeleteJob = async () => {
+        if (!userId) {
+            console.error("User ID is missing");
+            return;
+        }
         if (jobToDelete !== null) {
-            setJobOffers(prev => prev.filter(job => job.id !== jobToDelete));
-            setJobToDelete(null);
-            setShowConfirmationModal(false); // Ferme le modal après suppression
+            const result = await deleteJobOffer(jobToDelete, userId);
+            if (result && result.success) {
+                setJobOffers(jobOffers.filter((job) => job.id !== jobToDelete));
+                setJobToDelete(null);
+                setShowConfirmationModal(false); // Ferme le modal après suppression
+            } else {
+                alert("Erreur lors de la suppression de l'offre d'emploi.");
+            }
+        } else {
+            console.error("Job to delete is missing");
         }
     };
 
-    const openConfirmationModal = (jobId: number) => {
+    const openConfirmationModal = (jobId: string) => {
         setJobToDelete(jobId);
         setShowConfirmationModal(true);
     };
@@ -142,15 +209,17 @@ const RecruiterDashboard = () => {
 
     const handleContactCandidate = () => {
         // Logique pour contacter le candidat
-        alert(`Contacter ${selectedCandidate?.name}`);
+        alert(`Contacter ${selectedCandidate?.fullName}`);
     };
 
     const handleDownloadCV = () => {
         // Logique pour télécharger le CV
-        alert(`Télécharger le CV de ${selectedCandidate?.name}`);
+        alert(`Télécharger le CV de ${selectedCandidate?.fullName}`);
     };
 
-    const { isSignedIn } = useUser();
+
+
+
 
     return (
         <div className="flex h-screen bg-gray-100">
@@ -217,11 +286,12 @@ const RecruiterDashboard = () => {
                                     <button
                                         onClick={() => {
                                             setNewJob({
-                                                title: job.title,
+                                                jobTitle: job.jobTitle,
+                                                companyName: job.companyName,
+                                                salary: job.salary || "",
                                                 description: job.description,
-                                                location: job.location,
-                                                positionType: job.positionType,
-                                                experience: job.experience
+                                                locationJob: job.locationJob,
+                                                typeJob: job.typeJob,
                                             });
                                             setEditingJob(job);
                                             setShowJobForm(true);
@@ -244,10 +314,10 @@ const RecruiterDashboard = () => {
                                 >
                                     Prévisualiser <Eye />
                                 </button>
-                                <h3 className="font-bold text-lg">{job.title}</h3>
-                                <p className="text-gray-600">{job.positionType}</p>
-                                <p className="text-sm text-gray-500">{job.location}</p>
-                                <p className="text-sm text-gray-500">{job.experience}</p>
+                                <h3 className="font-bold text-lg">{job.jobTitle}</h3>
+                                <p className="text-gray-600">{job.typeJob}</p>
+                                <p className="text-sm text-gray-500">{job.locationJob}</p>
+                                <p className="text-sm text-gray-500">{job.salary}</p>
                                 <p className="mt-2 text-gray-700">{job.description}</p>
                             </div>
                         ))}
@@ -263,10 +333,10 @@ const RecruiterDashboard = () => {
                                             <Image src="/Avatar6.jpg" width={100} height={100} className="rounded-full" alt="Candidat Photo Profil" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-800">{candidate.name}</h3>
-                                            <p className="text-gray-600">{candidate.position}</p>
-                                            <p className="text-sm text-gray-500">{candidate.location}</p>
-                                            <p className="text-sm text-gray-500">{candidate.experience}</p>
+                                            <h3 className="font-bold text-gray-800">{candidate.fullName}</h3>
+                                            <p className="text-gray-600">{candidate.postSeeking}</p>
+                                            <p className="text-sm text-gray-500">{candidate.address}</p>
+                                            <p className="text-sm text-gray-500">{candidate.linkedin}</p>
                                             <p className="text-sm text-gray-500">{candidate.email}</p>
                                         </div>
                                     </div>
@@ -410,22 +480,17 @@ const RecruiterDashboard = () => {
                             </button>
                             <select className="select select-bordered" value={selectedPosition} onChange={(e) => setSelectedPosition(e.target.value)}>
                                 <option value="">Poste</option>
-                                {jobPositions.map((position, index) => (
-                                    <option key={index} value={position}>{position}</option>
+                                {candidates.map((postSeeking, index) => (
+                                    <option key={index} value={postSeeking.postSeeking || ''}>{postSeeking.postSeeking}</option>
                                 ))}
                             </select>
                             <select className="select select-bordered" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
                                 <option value="">Localisation</option>
-                                {locations.map((location, index) => (
-                                    <option key={index} value={location}>{location}</option>
+                                {candidates.map((Address, index) => (
+                                    <option key={index} value={Address.address}>{Address.address}</option>
                                 ))}
                             </select>
-                            <select className="select select-bordered" value={selectedExperience} onChange={(e) => setSelectedExperience(e.target.value)}>
-                                <option value="">Expérience</option>
-                                {experiences.map((exp, index) => (
-                                    <option key={index} value={exp}>{exp}</option>
-                                ))}
-                            </select>
+
                         </div>
 
                         {/* Candidate Cards */}
@@ -438,18 +503,19 @@ const RecruiterDashboard = () => {
                                                 <Image src="/Avatar6.jpg" width={100} height={100} className="rounded-full" alt="Candidat Photo Profil" />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-gray-800">{candidate.name}</h3>
-                                                <p className="text-gray-600">{candidate.position}</p>
-                                                <p className="text-sm text-gray-500">{candidate.location}</p>
-                                                <p className="text-sm text-gray-500">{candidate.experience}</p>
-                                                <p className="text-sm text-gray-500">{candidate.email}</p>
+                                                <h3 className="font-bold text-gray-800">{candidate.fullName}</h3>
+                                                <p className="text-gray-600">Poste: {candidate.postSeeking}</p>
+                                                <p className="text-sm text-gray-500">Addrese: {candidate.address}</p>
+                                                <p className="text-sm text-gray-500">Email: {candidate.email}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 mt-2">
                                             <button className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md mt-2"
-                                                onClick={handleContactCandidate}
+
                                             >
-                                                Contacter  <Mail />
+                                                <a href={`mailto:${selectedCandidate?.email}`} className="flex items-center gap-2 ">
+                                                    Contacter  <Mail />
+                                                </a>
                                             </button>
                                             <button
                                                 className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md mt-2"
@@ -514,19 +580,19 @@ const RecruiterDashboard = () => {
                                 <Image src="/Avatar6.jpg" width={100} height={100} className="rounded-md" alt="Candidat Photo Profil" />
                             </div>
                             <div>
-                                <h2 className="font-bold text-gray-800">{selectedCandidate.name}</h2>
-                                <p className="text-gray-600">{selectedCandidate.position}</p>
-                                <p className="text-sm text-gray-500">{selectedCandidate.location}</p>
-                                <p className="text-sm text-gray-500">{selectedCandidate.experience}</p>
+                                <h2 className="font-bold text-gray-800">{selectedCandidate.fullName}</h2>
+                                <p className="text-gray-600">{selectedCandidate.postSeeking}</p>
+                                <p className="text-sm text-gray-500">{selectedCandidate.address}</p>
                                 <p className="text-sm text-gray-500">{selectedCandidate.email}</p>
                             </div>
                         </div>
                         <div className="flex justify-end gap-4">
-                            <button
-                                className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md"
-                                onClick={handleContactCandidate}
+                            <button className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md mt-2"
+
                             >
-                                Contacter <Mail />
+                                <a href={`mailto:${selectedCandidate?.email}`} className="flex items-center gap-2 ">
+                                    Contacter  <Mail />
+                                </a>
                             </button>
                             <button
                                 className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md"
@@ -548,12 +614,12 @@ const RecruiterDashboard = () => {
                         >
                             <X />
                         </button>
-                        <h2 className="text-2xl font-bold mb-4">{previewJob.title}</h2>
+                        <h2 className="text-2xl font-bold mb-4">{previewJob.jobTitle}</h2>
                         <p className="text-gray-700 mb-4">{previewJob.description}</p>
                         <div className="flex justify-between">
-                            <p>Localisation: {previewJob.location}</p>
-                            <p>Type de poste: {previewJob.positionType}</p>
-                            <p>Expérience: {previewJob.experience}</p>
+                            <p>Localisation: {previewJob.locationJob}</p>
+                            <p>Type de poste: {previewJob.typeJob}</p>
+                            <p>Salaire: {previewJob.salary}</p>
                         </div>
                     </div>
                 </div>
@@ -566,11 +632,12 @@ const RecruiterDashboard = () => {
                                 setShowJobForm(false)
                                 setEditingJob(null)
                                 setNewJob({
-                                    title: "",
+                                    jobTitle: "",
+                                    companyName: "",
+                                    locationJob: "",
+                                    typeJob: "",
                                     description: "",
-                                    location: "",
-                                    positionType: "CDI",
-                                    experience: ""
+                                    salary: ""
                                 })
                             }}
                             className="absolute top-4 right-4 p-2 bg-slate-300 rounded-lg"
@@ -582,13 +649,7 @@ const RecruiterDashboard = () => {
                             {editingJob ? "Modifier l'offre" : "Nouvelle offre d'emploi"}
                         </h3>
 
-                        <button
-                            type="button"
-                            onClick={() => setPreviewJob({ ...newJob, id: 0 })}
-                            className="flex items-center mb-4 text-teal-600 hover:text-teal-800 text-sm p-2 bg-slate-300 rounded-lg"
-                        >
-                            Prévisualiser l&apos;offre <Eye className="ml-2" />
-                        </button>
+
 
                         <form onSubmit={handleJobSubmit} className="space-y-4">
                             <div>
@@ -597,8 +658,19 @@ const RecruiterDashboard = () => {
                                     type="text"
                                     required
                                     className="input input-bordered w-full"
-                                    value={newJob.title}
-                                    onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
+                                    value={newJob.jobTitle}
+                                    onChange={(e) => setNewJob({ ...newJob, jobTitle: e.target.value })}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-2">Nom de l&apos;entreprise</label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="input input-bordered w-full"
+                                    value={newJob.companyName}
+                                    onChange={(e) => setNewJob({ ...newJob, companyName: e.target.value })}
                                 />
                             </div>
 
@@ -613,47 +685,44 @@ const RecruiterDashboard = () => {
                             </div>
 
                             <div>
-                                <label className="block mb-2">Localisation</label>
-                                <select
-                                    className="select select-bordered w-full"
-                                    value={newJob.location}
-                                    onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
+                                <label className="block mb-2">Localisation du poste</label>
+                                <input
+                                    type="text"
                                     required
-                                >
-                                    <option value="">Sélectionnez une localisation</option>
-                                    {locations.map((location, index) => (
-                                        <option key={index} value={location}>{location}</option>
-                                    ))}
-                                </select>
+                                    className="input input-bordered w-full"
+                                    value={newJob.locationJob}
+                                    onChange={(e) => setNewJob({ ...newJob, locationJob: e.target.value })}
+                                />
                             </div>
 
                             <div>
                                 <label className="block mb-2">Type de poste</label>
                                 <select
+                                    required
                                     className="select select-bordered w-full"
-                                    value={newJob.positionType}
-                                    onChange={(e) => setNewJob({ ...newJob, positionType: e.target.value })}
+                                    value={newJob.typeJob}
+                                    onChange={(e) => setNewJob({ ...newJob, typeJob: e.target.value })}
                                 >
+                                    <option value="">Sélectionner le type de poste</option>
                                     <option value="CDI">CDI</option>
                                     <option value="CDD">CDD</option>
+                                    <option value="Stage">Stage</option>
+                                    <option value="Alternance">Alternance</option>
                                     <option value="Freelance">Freelance</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block mb-2">Expérience requise</label>
-                                <select
-                                    className="select select-bordered w-full"
-                                    value={newJob.experience}
-                                    onChange={(e) => setNewJob({ ...newJob, experience: e.target.value })}
+                                <label className="block mb-2">Salaire</label>
+                                <input
+                                    type="text"
                                     required
-                                >
-                                    <option value="">Sélectionnez l&apos;expérience</option>
-                                    {experiences.map((exp, index) => (
-                                        <option key={index} value={exp}>{exp}</option>
-                                    ))}
-                                </select>
+                                    className="input input-bordered w-full"
+                                    value={newJob.salary ?? ""}
+                                    onChange={(e) => setNewJob({ ...newJob, salary: e.target.value })}
+                                />
                             </div>
+
 
                             <button type="submit" className="btn bg-green-700 text-white text-lg w-full hover:bg-green-500">
                                 {editingJob ? "Modifier l'offre" : "Publier l'offre"}
