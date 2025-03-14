@@ -130,7 +130,7 @@ export async function saveCvData(data: CvData, userId: string) {
       await Promise.all([
         tx.experience.createMany({
           data: experiences.map(exp => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             jobTitle: exp.jobTitle,
             companyName: exp.companyName,
             startDate: new Date(exp.startDate),
@@ -144,7 +144,7 @@ export async function saveCvData(data: CvData, userId: string) {
         
         tx.education.createMany({
           data: educations.map(edu => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             degree: edu.degree,
             school: edu.school,
             startDate: new Date(edu.startDate),
@@ -155,7 +155,7 @@ export async function saveCvData(data: CvData, userId: string) {
         
         tx.skill.createMany({
           data: skills.map(skill => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             name: skill.name,
             level: skill.level,
           }))
@@ -163,7 +163,7 @@ export async function saveCvData(data: CvData, userId: string) {
         
         tx.language.createMany({
           data: languages.map(lang => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             name: lang.name,
             proficiency: lang.proficiency,
           }))
@@ -171,14 +171,14 @@ export async function saveCvData(data: CvData, userId: string) {
         
         tx.hobby.createMany({
           data: hobbies.map(hobby => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             name: hobby.name,
           }))
         }),
         
         tx.certification.createMany({
           data: certifications.map(cert => ({
-            cvId: cv.id,
+            cvId: cv?.id ?? '',
             name: cert.name,
           }))
         })
