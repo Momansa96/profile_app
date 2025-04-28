@@ -33,12 +33,12 @@ const Pricing = () => {
                                 <span className="text-sm font-medium text-gray-700">/Mois</span>
                             </p>
 
-                            <button
+                            <Link
                                 className="mt-4 block rounded border border-teal-600 bg-teal-600 px-12 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-teal-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-6"
-                                onClick={() => window.location.href = "/sign-up"}
+                                href = "/sign-up"
                             >
                                 Commencer gratuitement
-                            </button>
+                            </Link>
                         </div>
 
                         <div className="p-6 sm:px-8">
