@@ -1,3 +1,4 @@
+"use client"
 import Banner from "./components/home_components/Banner";
 import Faq from "./components/home_components/Faq";
 import Features from "./components/home_components/Features";
