@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from 'react';
 import { AlignRight, } from 'lucide-react';
 import { personalDetailsPreset } from '@/preset';

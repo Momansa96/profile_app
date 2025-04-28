@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import { Experiences } from '@/type';
 import { Plus } from 'lucide-react';
