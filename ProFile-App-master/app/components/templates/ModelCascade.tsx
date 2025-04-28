@@ -121,7 +121,7 @@ const ModelCascade: React.FC<Props> = ({ personalDetails, file, theme, experienc
                                     <h4 className='text-sm italic font-semibold'>{experience.companyName}</h4>
                                     <ul className='list-disc pl-6'>
                                         {experience.tasks.map((task, index) => (
-                                            <li key={index}>{task}</li>
+                                            <li key={index}>{task.content}</li>
                                         ))}
                                     </ul>
                                 </div>

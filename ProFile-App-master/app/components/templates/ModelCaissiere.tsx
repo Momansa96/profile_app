@@ -116,7 +116,7 @@ const ModelCaissiere: React.FC<Props> = ({ personalDetails, file, experiences, e
                                         <p className='text-sm text-slate-600'>{experience.description}</p>
                                         <ul key={index} className='flex flex-col gap-2 list-disc pl-6'>
                                             {experience.tasks.map((task, index) => (
-                                                <li key={index} className='text-slate-600 text-sm'>{task}</li>
+                                                <li key={index} className='text-slate-600 text-sm'>{task.content}</li>
                                             ))}
                                         </ul>
                                     </div>

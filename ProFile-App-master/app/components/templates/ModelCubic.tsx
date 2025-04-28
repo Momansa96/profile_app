@@ -65,7 +65,7 @@ const ModelCubic: React.FC<Props> = ({ personalDetails, file, theme, experiences
                     <h3 className='text-white text-xl mt-2 px-4'>{personalDetails.postSeeking}</h3>
                 </div>
                 <div className='flex items-start justify-start'>
-                    <div className='w-3/4 h-auto bg-white  p-8'>
+                    <div className='w-3/4 h-full bg-white  p-8'>
                         <div className='pb-6 text-md text-slate-600'>
                             <p>{personalDetails.description}</p>
                         </div>
@@ -82,7 +82,7 @@ const ModelCubic: React.FC<Props> = ({ personalDetails, file, theme, experiences
                                         <h4 className='text-sm italic font-semibold'>{experience.companyName}</h4>
                                         <ul className='list-disc pl-6'>
                                             {experience.tasks.map((task, index) => (
-                                                <li key={index}>{task}</li>
+                                                <li key={index}>{task.content}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -109,7 +109,7 @@ const ModelCubic: React.FC<Props> = ({ personalDetails, file, theme, experiences
                             <p className='text-sm text-slate-600'>---</p>
                         </div>
                     </div>
-                    <div className='w-1/4 h-auto bg-gray-200 '>
+                    <div className='w-1/4 h-full bg-gray-200 '>
 
                         <div className='h-52 w-52 overflow-hidden mt-4 mx-3'>
                             {file && (
@@ -143,9 +143,9 @@ const ModelCubic: React.FC<Props> = ({ personalDetails, file, theme, experiences
                                 <h3 className='font-bold'>E-mail</h3>
                                 <p>{personalDetails.email}</p>
                             </div>
-                            <div>
+                            <div className='pr-1'>
                                 <h3 className='font-bold'>LinkedIn</h3>
-                                <p className='text-balance'>{personalDetails.linkedin}</p>
+                                <p className='text-balance text-left'>{personalDetails.linkedin}</p>
                             </div>
                         </div>
                         <div className='py-2 px-4  w-full '>

@@ -101,7 +101,7 @@ const ModelGraphiste: React.FC<Props> = ({ personalDetails, file, experiences, e
                                         <h3 className='text-slate-600 font-medium'>{experience.endDate.substring(0, 4)} - {experience.startDate.substring(0, 4)} | {experience.jobTitle} | {experience.companyName}</h3>
                                         <ul key={index} className='flex flex-col gap-2 list-disc pl-6'>
                                             {experience.tasks.map((task, index) => (
-                                                <li key={index} className='text-slate-600 text-sm pl-2'>{task}</li>
+                                                <li key={index} className='text-slate-600 text-sm pl-2'>{task.content}</li>
                                             ))}
                                         </ul>
                                     </div>

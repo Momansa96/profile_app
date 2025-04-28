@@ -29,13 +29,10 @@ export const experiencesPreset: Experiences[] = [
     description:
       "Conception, développement et déploiement d'applications web complètes, allant de la définition des besoins à la mise en production. Responsable de la maintenance et de l'évolution des plateformes existantes.",
     tasks: [
-      "Analyse des besoins clients et proposition de solutions techniques adaptées.",
-      "Développement front-end avec React.js (TypeScript, Redux, Hooks).",
-      "Développement back-end avec Node.js (Express, MongoDB/PostgreSQL).",
-      "Conception et implémentation d'APIs RESTful.",
-      "Déploiement et maintenance des applications sur AWS/Heroku.",
-      "Rédaction de tests unitaires et d'intégration.",
-      "Collaboration avec l'équipe de design pour garantir une expérience utilisateur optimale."
+      { content: "Analyse des besoins clients et proposition de solutions techniques adaptées." },
+      { content: "Développement front-end avec React.js (TypeScript, Redux, Hooks)." },
+      { content: "Développement back-end avec Node.js (Express, MongoDB/PostgreSQL)." },
+      
     ],
   },
   {
@@ -46,11 +43,10 @@ export const experiencesPreset: Experiences[] = [
     description:
       "Développement et intégration de sites web responsives et performants, en mettant l'accent sur l'expérience utilisateur et l'accessibilité. Participation active à l'amélioration de l'architecture front-end.",
     tasks: [
-      "Développement de composants réutilisables avec React.js.",
-      "Intégration de maquettes graphiques (Figma, Adobe XD) en HTML/CSS/JavaScript.",
-      "Optimisation des performances web (chargement, rendu, SEO).",
-      "Tests cross-browser et résolution des problèmes de compatibilité.",
-      "Contribution à la documentation technique."
+      { content: "Développement de composants réutilisables avec React.js." },
+      { content: "Intégration de maquettes graphiques (Figma, Adobe XD) en HTML/CSS/JavaScript." },
+      { content: "Optimisation des performances web (chargement, rendu, SEO)." },
+      
     ],
   },
   {
@@ -61,10 +57,9 @@ export const experiencesPreset: Experiences[] = [
     description:
       "Assistance à l'équipe de développement web dans la création de sites web dynamiques et interactifs. Découverte des différentes étapes du cycle de vie d'un projet web.",
     tasks: [
-      "Développement d'interfaces utilisateur simples en HTML, CSS et JavaScript.",
-      "Correction de bugs et amélioration de l'existant.",
-      "Participation aux réunions de planification et de suivi de projet.",
-      "Rédaction de documentation technique basique."
+      { content: "Développement d'interfaces utilisateur simples en HTML, CSS et JavaScript." },
+      { content: "Correction de bugs et amélioration de l'existant." },
+      { content: "Participation aux réunions de planification et de suivi de projet." },
     ],
   },
 ];
@@ -106,13 +101,8 @@ export const educationsPreset: Education[] = [
 export const skillsPreset: Skill[] = [
   { name: "React.js", level: "Avancé" },
   { name: "Node.js", level: "Intermédiaire" },
-  { name: "Express.js", level: "Intermédiaire" },
-  { name: "MongoDB", level: "Débutant" }, 
   { name: "JavaScript", level: "Avancé" },
-  { name: "TypeScript", level: "Intermédiaire" },
-  { name: "HTML/CSS", level: "Avancé" },
-  { name: "Git", level: "Intermédiaire" },
-  { name: "RESTful APIs", level: "Intermédiaire" },
+  
 ];
 
 export const languagesPreset: Language[] = [

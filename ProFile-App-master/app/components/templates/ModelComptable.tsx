@@ -99,7 +99,7 @@ const ModelComptable: React.FC<Props> = ({ personalDetails, file, experiences, e
                                     <ul className='list-disc'>
                                         {experience.tasks.map((task, index) => (
                                             <li key={index} className=' flex-col gap-4 mt-2 '>
-                                                <h3 className='text-md'>{task}</h3>
+                                                <h3 className='text-md'>{task.content}</h3>
                                             </li>
                                         ))}
                                     </ul>

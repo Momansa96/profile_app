@@ -30,7 +30,8 @@ const Skills = () => {
                 <p className="text-sm text-gray-800 dark:text-gray-200 mt-2">{experience.description}</p>
                 <ul className="list-disc ms-6 mt-3 space-y-1.5">
                   {experience.tasks && experience.tasks.map((task, taskIndex) => (
-                    <li key={taskIndex} className="ps-1 text-sm text-gray-600 dark:text-gray-400">{task}</li>
+                    <li key={taskIndex} className="ps-1 text-sm text-gray-600 dark:text-gray-400">{task.content}</li>
+
                   ))}
                 </ul>
               </div>

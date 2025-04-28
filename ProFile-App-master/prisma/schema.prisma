@@ -3,24 +3,33 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id        String   @id @default(uuid())
   fullName  String
   email     String   @unique
+  clerkId   String   @unique
   role      String   @default("CANDIDAT") // "CANDIDAT" ou "RECRUTEUR"
   cv        Cv?
   emplois   Emploi[]
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Favorite Favorite[]
+
+  Candidature Candidature[]
+
+  RecruterFavorite RecruterFavorite[]
 }
 
 model Cv {
   id             String          @id @default(uuid())
-  userId         String          @unique
+  clerkId         String          @unique
   fullName       String
   email          String
   phone          String
@@ -30,7 +39,7 @@ model Cv {
   description    String
   photoUrl       String
   pdfUrl         String?
-  user           User            @relation(fields: [userId], references: [id])
+  user           User            @relation(fields: [clerkId], references: [clerkId])
   experiences    Experience[]
   educations     Education[]
   skills         Skill[]
@@ -40,6 +49,8 @@ model Cv {
   candidatures   Candidature[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+
+  RecruterFavorite RecruterFavorite[]
 }
 
 model Experience {
@@ -51,14 +62,14 @@ model Experience {
   endDate     DateTime
   description String?
   tasks       Task[]
-  cv          Cv       @relation(fields: [cvId], references: [id])
+  cv          Cv       @relation(fields: [cvId], references: [id],  onDelete: Cascade)
 }
 
 model Task {
   id           String     @id @default(uuid())
   experienceId String
   content      String
-  experience   Experience @relation(fields: [experienceId], references: [id])
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
 }
 
 model Education {
@@ -115,20 +126,47 @@ model Emploi {
   datePublished DateTime @default(now())
   status        String   @default("En attente") // Statut de l'offre d'emploi
 
-  userId       String
-  user         User          @relation(fields: [userId], references: [id])
+  clerkId       String
+  user         User          @relation(fields: [clerkId], references: [clerkId])
   candidatures Candidature[]
+
+  Favorite Favorite[]
 }
 
 model Candidature {
-  id       String @id @default(uuid())
-  cvId     String
+  id       String   @id @default(uuid())
+  clerkId  String
   emploiId String
-  status   String @default("En attente") // Statut de la candidature
+  status   String   @default("En attente") // Statut de la candidature
 
-  cv     Cv     @relation(fields: [cvId], references: [id])
-  emploi Emploi @relation(fields: [emploiId], references: [id])
+  user     User     @relation(fields: [clerkId], references: [clerkId])
+  emploi   Emploi   @relation(fields: [emploiId], references: [id])
+  cv       Cv?      @relation(fields: [clerkId], references: [clerkId], map: "Candidature_clerkId_cv_fkey")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Favorite {
+  id       String @id @default(uuid())
+  clerkId   String
+  emploiId String
+
+  user     User   @relation(fields: [clerkId], references: [clerkId])
+  emploi   Emploi @relation(fields: [emploiId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RecruterFavorite {
+  id          String   @id @default(uuid())
+  clerkId     String
+  candidateId String
+
+  user        User     @relation(fields: [clerkId], references: [clerkId])
+  candidate   Cv       @relation(fields: [candidateId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

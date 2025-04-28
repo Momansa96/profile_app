@@ -81,7 +81,7 @@ const ModelLumina: React.FC<Props> = ({ personalDetails, file, experiences, educ
                                 {experience.tasks && (
                                     <ul className='list-disc ms-5 mt-2 space-y-1'>
                                         {experience.tasks.map((task, taskIndex) => (
-                                            <li key={taskIndex} className='text-sm text-gray-700 dark:text-gray-200'>{task}</li>
+                                            <li key={taskIndex} className='text-sm text-gray-700 dark:text-gray-200'>{task.content}</li>
                                         ))}
                                     </ul>
                                 )}

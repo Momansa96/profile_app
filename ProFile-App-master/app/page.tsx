@@ -1,12 +1,13 @@
-import Banner from "./components/Banner";
-import Faq from "./components/Faq";
-import Features from "./components/Features";
-import Footer from "./components/Footer";
-import Logo from "./components/Logo";
+import Banner from "./components/home_components/Banner";
+import Faq from "./components/home_components/Faq";
+import Features from "./components/home_components/Features";
+import Footer from "./components/home_components/Footer";
+import Logo from "./components/home_components/Logo";
 import Navbar from "./components/Navbar"
-import Pricing from "./components/Pricing";
-import Testimonial from "./components/Testimonial";
+import Pricing from "./components/home_components/Pricing";
+import Testimonial from "./components/home_components/Testimonial";
 export default function Home() {
+  
   return (
     <div>
       <Navbar />
@@ -14,12 +15,12 @@ export default function Home() {
         <Banner />
         <Logo />
         <Features />
-        <Testimonial/>
-        <Pricing/>
+        <Testimonial />
+        <Pricing />
         <Faq />
         <Footer />
       </div>
-      
+
     </div>
   );
 }

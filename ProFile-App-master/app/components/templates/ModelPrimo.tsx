@@ -103,7 +103,7 @@ const ModelPrimo: React.FC<Props> = ({ personalDetails, file, theme, experiences
                                         <p className="text-md text-gray-600 italic font-medium">{experience.companyName}</p>
                                         <ul className="list-disc ms-6 mt-3 space-y-1.5">
                                             {experience.tasks && experience.tasks.map((task, taskIndex) => (
-                                                <li key={taskIndex} className="ps-1 text-sm text-gray-600 dark:text-gray-400">{task}</li>
+                                                <li key={taskIndex} className="ps-1 text-sm text-gray-600 dark:text-gray-400">{task.content}</li>
                                             ))}
                                         </ul>
                                     </div>

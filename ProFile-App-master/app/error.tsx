@@ -28,7 +28,7 @@ const Error = ({ error, reset }: ErrorProps) => {
       <button
         onClick={() => reset()}
         style={{
-          padding: '10px 20px',
+          padding: '10px 18px',
           backgroundColor: '#0070f3',
           color: 'white',
           border: 'none',

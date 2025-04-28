@@ -4,9 +4,9 @@ export type PersonalDetails = {
   phone: string;
   address: string;
   linkedin: string;
-  photoUrl?: string;
-  description?: string;
-  postSeeking?: string;
+  photoUrl: string;
+  description: string;
+  postSeeking: string;
 };
 
 export type Experiences = {
@@ -15,7 +15,7 @@ export type Experiences = {
   startDate: string;
   endDate: string;
   description: string;
-  tasks: string[];
+  tasks: { content: string }[];
 };
 
 export type Education = {
@@ -43,20 +43,23 @@ export type Certification = {
   name: string;
 };
 
-export type Cvdata = {
-  userId: string;
-  fullName: string;
-  email: string;
-  postSeeking?: string;
-  description?: string;
-  photoUrl?: string;
-  pdfUrl?: string;
-  cvdata: {
-    experiences: Experiences[];
-    educations: Education[];
-    languages: Language[];
-    skills: Skill[];
-    hobbies: Hobby[];
+export type CvData = {
+  personalDetails: {
+    fullName: string;
+    email: string;
+    phone: string;
+    linkedin: string;
+    address: string;
+    postSeeking: string;
+    description: string;
+    photoUrl: string;
   };
-}
+  experiences: Experiences[];
+  educations: Education[];
+  languages: Language[];
+  skills: Skill[];
+  hobbies: Hobby[];
+  certifications: Certification[];
+};
+
 

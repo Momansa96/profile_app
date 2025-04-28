@@ -25,22 +25,22 @@ const Navbar = () => {
 
     useEffect(() => {
         const email = user?.emailAddresses?.[0]?.emailAddress;
-        const fullName = user?.firstName + " " + user?.lastName;
-        if (!email) return;
-    
-        checkAndAddUser(email, fullName)
-            .then(() => console.log(`Utilisateur vérifié : ${email}`))
+        const fullName = user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : "";
+        const clerkId = user?.id || "";
+        if (!email || !fullName || !clerkId) return;
+        checkAndAddUser(email, fullName, clerkId)
+            .then(() => console.log("User added successfully"))
             .catch(error => console.error("Une erreur est survenue dans useEffect :", error));
     }, [user]);
 
-    if (!isLoaded) return null; 
+    if (!isLoaded) return null;
 
     const menuLinks = isSignedIn
         ? [
             { href: "/", label: "Accueil" },
-            { href: "/dashboardjober/Opportunity", label: "Opportunités" },
-            { href: "/dashboardjober", label: "Profiler" },
-            { href: "/dashboardjober/Mon-Portfolio/[userId]", label: "Mon Portfolio" },
+            { href: "/dashboard/candidat/Opportunity", label: "Opportunités" },
+            { href: "/dashboard/candidat", label: "Profiler" },
+            { href: "/dashboard/candidat/Mon-Portfolio/[userId]", label: "Mon Portfolio" },
         ]
         : [
             { href: "./", label: "Accueil" },
@@ -64,21 +64,23 @@ const Navbar = () => {
                             <nav aria-label="Global">
                                 <ul className="flex items-center gap-6 text-x">
                                     {menuLinks.map((link, index) => (
-                                        <li key={index}>
+                                        <li key={index} >
                                             {link.label === "Mon Portfolio" ? (
                                                 <a
-                                                    className="text-gray-500 transition hover:text-teal-700/75"
+                                                    className="text-gray-500 transition hover:text-teal-700/75 relative"
                                                     href={link.href}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
                                                     {link.label}
+                                                    <span className="text-sm text-green-700 rounded-lg p-1 border-green-700  badge absolute -right-4  top-5">Version test</span>
                                                 </a>
                                             ) : (
                                                 <Link className="text-gray-500 transition hover:text-teal-700/75" href={link.href}>
                                                     {link.label}
                                                 </Link>
                                             )}
+                                            
                                         </li>
                                     ))}
                                     {isSignedIn && <UserButton />}
@@ -110,12 +112,14 @@ const Navbar = () => {
                                     <li key={index}>
                                         {link.label === "Mon Portfolio" ? (
                                             <a
-                                                className="text-gray-500 transition hover:text-gray-500/75"
+                                                className="text-gray-500 transition hover:text-gray-500/75 flex justify-between items-center relative"
                                                 href={link.href}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
                                                 {link.label}
+                                                <span className="text-sm text-green-700 rounded-lg p-1 border-green-700  badge">Version test</span>
+
                                             </a>
                                         ) : (
                                             <Link className="text-gray-500 transition hover:text-gray-500/75" href={link.href}>
