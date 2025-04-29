@@ -257,7 +257,7 @@ export default function OpportunityPage() {
 
 
           {/* Contenu principal */}
-          <div className="flex-1 h-full overflow-y-auto bg-gray-50 p-1 pt-0  rounded-lg shadow-md relative">
+          <div className="flex-1 h-full  bg-gray-50 p-1 pt-0  rounded-lg shadow-md relative">
             {/* Filtres */}
             <div className="flex flex-wrap w-full gap-2 bg-gray-50 mb-2 sticky  md:top-0 md:left-4 md:right-4 p-2  z-20 rounded-md ">
               {/* Champ de recherche */}
