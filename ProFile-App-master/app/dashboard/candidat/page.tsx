@@ -227,8 +227,8 @@ const Page = () => {
         <section className='flex items-center  w-full bg-base-200'>
 
           {/**Sidebar de modification du CV */}
-          <div className='w-1/4 h-auto py-8 px-6 bg-base-200 scrollable no-scrollbar'>
-            <div className="mb-2 flex justify-between items-center text-teal-700">
+          <div className='w-1/4 h-[90vh]  px-6 pt-1 bg-base-200 scrollable no-scrollbar'>
+            <div className="mb-2 flex justify-between items-center text-teal-700 sticky top-0 bg-base-200 z-10 pt-3 pb-5">
               <p className='text-lg font-bold'>Bienvenue, {user.firstName} !</p>
               <button className="btn bg-teal-700 text-white hover:border-teal-600 hover:bg-teal-950" onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
                 Agrandir
@@ -344,68 +344,68 @@ const Page = () => {
           </div>
 
           {/*Espace de visualisation du CV  */}
-          <div className='w-3/4 h-full bg-base-100 bg-[url("/grille.svg")] bg-cover  bg-center no-scrollbar scrollable-preview relative overflow-hidden'>
-          <div className="fixed z-[9999] top-20 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-lg p-3 rounded-2xl border border-white/10 hover:border-teal-400/30 transition-all duration-300 group">
-  <div className="flex gap-6 items-center justify-center">
-    
-    {/* Contrôle Zoom - Version Holographique */}
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-3 bg-gradient-to-r from-teal-700/20 to-teal-900/30 p-2 px-4 rounded-xl border border-white/5">
-        <span className="text-sm font-mono text-teal-300">ZOOM</span>
-        <input
-          type="range"
-          min={50}
-          max={200}
-          value={zoom}
-          onChange={(e) => setZoom(Number(e.target.value))}
-          className="range range-sm range-teal-500 glow-teal w-40"
-        />
-        <div className="w-16 text-right">
-          <p className="text-teal-400 font-bold text-sm tracking-widest font-mono">
-            {zoom}%
-          </p>
-        </div>
-      </div>
-    </div>
+          <div className='w-3/4 h-[90vh] bg-base-100 bg-[url("/grille.svg")] bg-cover  bg-center no-scrollbar scrollable-preview relative overflow-hidden'>
+            <div className="fixed z-[9999] top-20 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-lg p-3 rounded-2xl border border-white/10 hover:border-teal-400/30 transition-all duration-300 group">
+              <div className="flex gap-6 items-center justify-center">
 
-    {/* Sélecteur de Thème - Style Cyberpunk */}
-    <div className="relative">
-      <select
-        value={theme}
-        onChange={(e) => setTheme(e.target.value)}
-        className="appearance-none bg-black/40 border-2 border-teal-500/20 rounded-xl py-2 pl-4 pr-8 text-teal-300 text-sm font-mono cursor-pointer hover:border-teal-400/50 transition-all"
-      >
-        {themes.map((themeName) => (
-          <option 
-            key={themeName} 
-            value={themeName}
-            className="bg-black text-teal-300"
-          >
-            {themeName.toUpperCase()}
-          </option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
-        <ChevronDown className="w-5 h-5 text-teal-400/50" />
-      </div>
-    </div>
+                {/* Contrôle Zoom - Version Holographique */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 bg-gradient-to-r from-teal-700/20 to-teal-900/30 p-2 px-4 rounded-xl border border-white/5">
+                    <span className="text-sm font-mono text-teal-300">ZOOM</span>
+                    <input
+                      type="range"
+                      min={50}
+                      max={200}
+                      value={zoom}
+                      onChange={(e) => setZoom(Number(e.target.value))}
+                      className="range range-sm range-teal-500 glow-teal w-40"
+                    />
+                    <div className="w-16 text-right">
+                      <p className="text-teal-400 font-bold text-sm tracking-widest font-mono">
+                        {zoom}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-    {/* Sélecteur de Template - Interface HUD */}
-    <div className="relative group">
-      <CvTemplatesselector 
-        onSelect={handleTemplateSelect}
-        
-      />
-      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-[2px] w-8 bg-teal-400/30 group-hover:w-16 transition-all duration-300"></div>
-    </div>
+                {/* Sélecteur de Thème - Style Cyberpunk */}
+                <div className="relative">
+                  <select
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
+                    className="appearance-none bg-black/40 border-2 border-teal-500/20 rounded-xl py-2 pl-4 pr-8 text-teal-300 text-sm font-mono cursor-pointer hover:border-teal-400/50 transition-all"
+                  >
+                    {themes.map((themeName) => (
+                      <option
+                        key={themeName}
+                        value={themeName}
+                        className="bg-black text-teal-300"
+                      >
+                        {themeName.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                    <ChevronDown className="w-5 h-5 text-teal-400/50" />
+                  </div>
+                </div>
 
-  </div>
-  
-  {/* Effet de lumière dynamique */}
-  <div className="absolute inset-0 rounded-2xl pointer-events-none">
-    <div className="absolute -inset-1 bg-teal-500/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-  </div>
-</div>
+                {/* Sélecteur de Template - Interface HUD */}
+                <div className="relative group">
+                  <CvTemplatesselector
+                    onSelect={handleTemplateSelect}
+
+                  />
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-[2px] w-8 bg-teal-400/30 group-hover:w-16 transition-all duration-300"></div>
+                </div>
+
+              </div>
+
+              {/* Effet de lumière dynamique */}
+              <div className="absolute inset-0 rounded-2xl pointer-events-none">
+                <div className="absolute -inset-1 bg-teal-500/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </div>
+            </div>
 
 
 
