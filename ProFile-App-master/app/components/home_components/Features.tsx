@@ -19,11 +19,11 @@ const Features = () => {
                     <div className="rounded-lg bg-gray-100/80 max-w-2xl ">
                         <div className="p-6 sm:p-8">
                             <h3 className="text-3xl font-medium text-gray-900">
-                                Créez, personnalisez et partagez
+                                Créez, personnalisez et partagez votre CV
                             </h3>
 
                             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-                                Gagnez du temps avec notre éditeur de CV en ligne intuitif. ProFile vous permet de concevoir un CV professionnel, de l’exporter en PDF et de le partager en un clic avec les recruteurs.
+                                Gagnez du temps avec notre éditeur de CV en ligne intuitif. <span className='font-bold text-teal-700'>ProFile</span> vous permet de concevoir un CV professionnel, de l&apos;exporter en PDF et de le partager en un clic avec les recruteurs.
                             </p>
 
                             <ul className='mt-2'>
@@ -33,7 +33,7 @@ const Features = () => {
                                         color='white'
                                         width={20}
                                     />
-                                    Modèles de CV personnalisables
+                                    Modèles modernes et personnalisables
                                 </li>
                                 <li className='mb-2 flex gap-1 item-center'>
                                     <CircleCheck
@@ -41,7 +41,7 @@ const Features = () => {
                                         color='white'
                                         width={20}
                                     />
-                                    Sauvegarde automatique
+                                    Sauvegarde automatique en ligne
                                 </li>
                                 <li className='mb-2 flex gap-1 item-center'>
                                     <CircleCheck
@@ -49,7 +49,7 @@ const Features = () => {
                                         color='white'
                                         width={20}
                                     />
-                                    Génération de lien public
+                                    Génération automatique de portfolio en ligne
                                 </li>
                                 <li className='mb-2 flex gap-1 item-center'>
                                     <CircleCheck
@@ -57,7 +57,7 @@ const Features = () => {
                                         color='white'
                                         width={20}
                                     />
-                                    Export PDF instantané
+                                    Export PDF haute qualité
                                 </li>
                             </ul>
 
@@ -81,7 +81,7 @@ const Features = () => {
                             </h3>
 
                             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-                                Accédez à une base de profils qualifiés et filtrables selon vos critères de recherche. ProFile simplifie votre processus de recrutement en mettant à votre disposition des outils avancés pour identifier rapidement les candidats qui correspondent à vos besoins.
+                                Accédez à une base de profils qualifiés et filtrables selon vos critères de recherche. <span className='font-bold text-teal-700'>ProFile</span> simplifie votre processus de recrutement en mettant à votre disposition des outils avancés pour identifier rapidement les candidats qui correspondent à vos besoins.
                             </p>
 
                             <ul className='mt-2'>

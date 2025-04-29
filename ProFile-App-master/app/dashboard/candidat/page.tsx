@@ -691,15 +691,15 @@ const Page = () => {
       <div className="sm:block md:block lg:hidden mt-8 mx-auto">
         <div className=" bg-teal-100/50  rounded-lg p-6 w-full max-w-md mx-auto">
           <div className="w-full">
-            <h1 className="text-x font-bold">Oupss ! Pour des raison d&apos;ergonomie votre outils est uniquement disponible sur un ecran plus grand</h1>
+            <h1 className="text-center font-bold text-error">Oupss ! Pour des raison d&apos;ergonomie votre outils est uniquement disponible sur un ecran plus grand</h1>
             <Image
-              src="/sorry.gif"
-              width={200}
-              height={200}
+              src="/sorry.jpg"
+              width={350}
+              height={400}
               alt="Désolé, fonctionnalité indisponible sur mobile"
               className="mx-auto my-3"
             />
-            <p className="py-3">
+            <p className="py-3 text-teal-600 font-bold text-center">
               Mettez vous sur un ecran plus grand pour profiter de toutes les fonctionnalités de l&apos;application.
             </p>
           </div>

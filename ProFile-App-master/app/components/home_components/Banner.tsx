@@ -14,7 +14,7 @@ const Banner = () => {
                     </h1>
 
                     <p className="mt-4 sm:text-xl/relaxed">
-                        Une plateforme intuitive pour concevoir, personnaliser et partager votre CV en ligne. Simplifiez votre recherche d’emploi et soyez visible auprès des recruteurs.
+                    Une plateforme intuitive pour créer, personnaliser et partager votre CV en ligne. Simplifiez votre recherche d’emploi et rendez-vous visible auprès des recruteurs.
                     </p>
 
                     <div className="mt-8 flex flex-wrap justify-center gap-4">

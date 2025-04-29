@@ -29,8 +29,6 @@ const Navbar = () => {
         const clerkId = user?.id || "";
         if (!email || !fullName || !clerkId) return;
         checkAndAddUser(email, fullName, clerkId)
-            .then(() => console.log("User added successfully"))
-            .catch(error => console.error("Une erreur est survenue dans useEffect :", error));
     }, [user]);
 
     if (!isLoaded) return null;

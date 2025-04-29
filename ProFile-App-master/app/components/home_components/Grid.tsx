@@ -33,14 +33,14 @@ const Grid = () => {
             </div>
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Plusieurs entreprise nous font confiance</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Plusieurs entreprises nous font confiance</h2>
 
                     <p className="mt-4 text-gray-500 sm:text-xl">
-                        Ces entreprises qui nous font confiance pour simplifier leur processus de recrutement. Grâce à leur soutien, <span className='text-teal-500 underline'>Profile</span> connecte les talents aux opportunités et offre une solution innovante pour la gestion de leur processus de recherche d&apos;emploi.
+                        Ces entreprises nous font confiance pour simplifier leur processus de recrutement. Grâce à leur soutien,  <span className='text-teal-500 underline'>Profile</span> connecte les talents aux opportunités et propose une solution innovante pour la gestion du processus de recherche d’emploi.
                     </p>
                 </div>
 
-                
+
             </div>
         </div>
     )
