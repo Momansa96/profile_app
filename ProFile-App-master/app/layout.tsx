@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   title: "Profile-App",
   description: "Application de gestion de Cv en ligne et de mise en relation pour les recruteurs.",
   icons: {
-    icon: "/favicon.png", // Pour PNG
-    shortcut: "/favicon.png", // Alternative
-    apple: "/favicon.png", // Pour iOS
+    icon: "/logo.png", // Pour PNG
+    shortcut: "/logo.png", // Alternative
+    apple: "/logo.png", // Pour iOS
   },
 };
 
