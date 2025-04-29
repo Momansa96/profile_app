@@ -105,7 +105,7 @@ const Navbar = () => {
                 </div>
 
                 {mobileMenuOpen && (
-                    <div className="md:hidden bg-white border-gray-200 mx-4 my-1 absolute right-0 w-[50%] rounded-xl overflow-hidden shadow-lg menu-container">
+                    <div className="md:hidden bg-white border-gray-200 mx-4 my-1 absolute right-0 w-[50%] rounded-xl overflow-hidden shadow-lg menu-container z-9999">
                         <nav aria-label="Mobile Navigation">
                             <ul className="flex flex-col gap-6 text-sm bg-gray-100 p-3">
                                 {menuLinks.map((link, index) => (
