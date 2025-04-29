@@ -8,6 +8,7 @@ import { useUser } from '@clerk/nextjs';
 import { getCvData } from '@/app/actions';
 import emailjs from '@emailjs/browser'
 import ModalSendMail from '@/app/components/portfolio/ModalSendMail';
+import Link from 'next/link';
 
 
 
@@ -178,11 +179,11 @@ const PortfolioPage: React.FC = () => {
                   initial={{ opacity: 0, x: 100 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 100 }}
-                  className="fixed inset-0 bg-black/20 "
+                  className="fixed inset-0 bg-black/20 backdrop-blur-sm rounded-md z-50"
                   onClick={closeMobileMenu}
                 >
                   <motion.nav
-                    className="absolute right-0 top-0 h-full w-80 shadow-2xl p-8"
+                    className="absolute right-5 top-5 h-[70vh] w-80 rounded-lg   bg-slate-200 p-8"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex justify-between items-center mb-12">
@@ -233,7 +234,7 @@ const PortfolioPage: React.FC = () => {
           }}
           className="min-h-screen container relative overflow-hidden grid place-items-center before:absolute before:top-0 before:left-1/2 before:bg-heroLight before:bg-no-repeat before:bg-top before:w-full before:h-full before:-z-10 before:-translate-x-1/2 dark:before:bg-heroDark"
         >
-          <div className="w-full pt-20 max-w-7xl grid md:grid-cols-6 gap-6 items-center justify-around h-full">
+          <div className="w-full pt-24 max-w-7xl grid md:grid-cols-6 gap-6 items-center justify-around h-full">
             {/* Texte d’intro */}
             <div className="md:col-span-3 lg:col-span-2 text-center md:text-left sm:pl-4">
               <h5 className="font-medium text-gray-600 dark:text-gray-300 mb-2">
@@ -366,7 +367,7 @@ const PortfolioPage: React.FC = () => {
         </section>
         <section
           id="about"
-          className="relative py-20 overflow-hidden"
+          className="relative pt-24 overflow-hidden"
           style={{ background: "radial-gradient(circle at 10% 20%, rgba(5, 150, 105, 0.05), transparent 40%)" }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -375,7 +376,7 @@ const PortfolioPage: React.FC = () => {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              className="text-center mb-12"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-3">
                 <User className="w-10 h-10 text-teal-700 animate-bounce-slow" />
@@ -487,7 +488,7 @@ const PortfolioPage: React.FC = () => {
                     <ul className="grid grid-cols-2 gap-3">
                       {cvData?.hobbies.map((hobby) => (
                         <li key={hobby.name} className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                          <span className="w-2 h-2 bg-teal-600 rounded-full" />
+                          <span className="w-2 h-2 bg-teal-600 rounded-full flex-shrink-0" />
                           {hobby.name}
                         </li>
                       ))}
@@ -529,7 +530,7 @@ const PortfolioPage: React.FC = () => {
         </section>
         <section
           id="skills"
-          className="relative py-20 overflow-hidden bg-gradient-to-b from-white/50 to-transparent dark:from-slate-900/50"
+          className="relative pt-24 overflow-hidden bg-gradient-to-b from-white/50 to-transparent dark:from-slate-900/50"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             {/* Section Header */}
@@ -602,7 +603,10 @@ const PortfolioPage: React.FC = () => {
                                   key={taskIndex}
                                   className="flex items-start gap-2 text-gray-600 dark:text-gray-300"
                                 >
-                                  <span className="w-2 h-2 bg-primary rounded-full mt-2" />
+                                  <span 
+      className="w-2 h-2 bg-teal-700 rounded-full mt-2 flex-shrink-0" 
+      aria-hidden="true"
+    ></span>
                                   <span>{task.content}</span>
                                 </li>
                               ))}
@@ -690,7 +694,7 @@ const PortfolioPage: React.FC = () => {
         </section>
         <section
           id="contact"
-          className="container relative max-w-4xl mx-auto min-h-screen flex items-center justify-center px-5 mt-9 pt-10"
+          className="container relative max-w-4xl mx-auto min-h-screen flex items-center justify-center px-5 mt-9 pt-20"
         >
           <div className="pb-10">
             <div className="text-center">
@@ -750,7 +754,7 @@ const PortfolioPage: React.FC = () => {
 
                   <button
                     type="submit"
-                    className="px-4 py-3 shadow-xl z-10 inline-flex items-center gap-2 w-fit duration-300 rounded-md bg-primary hover:bg-blue-700 text-white font-medium ml-auto"
+                    className="px-4 py-3 shadow-xl z-10 inline-flex items-center gap-2 w-fit duration-300 rounded-md bg-teal-600 hover:bg-teal-700 text-white font-medium ml-auto"
                   >
                     Envoyer
                   </button>
@@ -825,19 +829,19 @@ const PortfolioPage: React.FC = () => {
 
             <ul className="text-center">
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#about">
+                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#about">
                   A propos
-                </a>
+                </Link>
               </li>
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#story">
+                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#story">
                   Parcours
-                </a>
+                </Link>
               </li>
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#contact">
+                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#contact">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
 
