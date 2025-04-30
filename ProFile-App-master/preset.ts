@@ -81,7 +81,14 @@ export const educationsPreset: Education[] = [
     description:
       "Acquisition des fondamentaux de l'informatique : algorithmique, programmation, bases de données, réseaux, systèmes d'exploitation. Projets pratiques de développement d'applications.",
   },
-   
+   {
+    degree: "Certification Développeur Front-End React",
+    school: "FreeCodeCamp",
+    startDate: "2022-01-15",
+    endDate: "2022-05-15",
+    description:
+      "Certification attestant de la maîtrise des technologies front-end, notamment HTML, CSS, JavaScript et React.js.",
+  },
   {
     degree: "Baccalauréat Scientifique (Série C)",
     school: "Collège d'Enseignement Général d'Abomey-Calavi",

@@ -43,13 +43,13 @@ export default function CVTemplateSelector({
       
         <motion.div 
           initial={{ x: "100%" }}
-          animate={{ x: showSidebar ? 0 : "200%" }}
+          animate={{ x: showSidebar ? 0 : "150%" }}
           transition={{ type: "tween", duration: 0.4 }}
-          className="fixed top-0 rounded-xl -right-96 h-[80vh]  w-64 bg-white shadow-lg p-4 overflow-y-auto z-50  no-scrollbar"
+          className="fixed top-16 rounded-xl right-10  h-[80%] w-64 bg-white shadow-lg p-4 overflow-y-auto z-50  no-scrollbar"
         >
           <button 
             onClick={() => setShowSidebar(false)}
-            className="btn btn-error w-full mb-4 rounded-xl sticky top-0 z-20 bg-red-500 text-white hover:bg-red-700" 
+            className="btn btn-error w-full mb-4 rounded-xl"
           >
             Fermer <ArrowRightFromLine  className="w-6 h-6 inline-block" />
           </button>

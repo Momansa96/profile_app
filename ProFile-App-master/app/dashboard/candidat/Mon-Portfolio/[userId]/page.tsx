@@ -1,46 +1,20 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
-import { AlignRight, BriefcaseBusiness, Drama, Earth, GraduationCap, MapPin, Phone, User, Download, ExternalLink, Mail, SquareUserRound, X } from 'lucide-react';
-import { CvData } from '@/type';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AlignRight, BriefcaseBusiness, Drama, Earth, GraduationCap, MapPin, Phone, User, Download, ExternalLink, Mail, SquareUserRound } from 'lucide-react';
+import { CvData, Education, Experiences, Skill } from '@/type';
+import { motion } from 'framer-motion';
 import { useUser } from '@clerk/nextjs';
 import { getCvData } from '@/app/actions';
 import emailjs from '@emailjs/browser'
 import ModalSendMail from '@/app/components/portfolio/ModalSendMail';
-import Link from 'next/link';
 
 
 
 
 const PortfolioPage: React.FC = () => {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
-  const closeMobileMenu = () => setMobileMenuOpen(false);
-
-  const navItems = [
-    { id: 'home', label: 'Accueil' },
-    { id: 'about', label: 'À propos' },
-    { id: 'skills', label: 'Parcours' },
-    { id: 'contact', label: 'Contact' },
-  ];
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 }
-  };
   const [cvData, setCvData] = useState<CvData | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const user = useUser();
   const clerkId = user.user?.id;
 
@@ -107,598 +81,321 @@ const PortfolioPage: React.FC = () => {
     return <p>Erreur : CV introuvable.</p>;
   }
 
-
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
 
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, type: 'spring' }}
-        className="fixed w-full py-4 px-4 xl:px-8 z-50 backdrop-blur-lg bg-white/90 border-b border-teal-100 shadow-sm"
+      <header
+        id='home'
+        className="fixed xl:block w-full py-4 lg:px-2 px-4 z-[999] duration-300 bg-slate-300 rounded-lg "
       >
-        <nav className="max-w-7xl mx-auto flex justify-between items-center">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-4 group cursor-pointer"
-          >
-            <div className="size-12 bg-teal-700 text-white rounded-xl font-bold text-2xl flex items-center justify-center shadow-lg">
+        <nav className="flex justify-between items-center max-w-6xl mx-auto px-2">
+          <div className="flex gap-4 items-center">
+            <div
+              className="bg-primary text-white rounded-full size-10 text-xl grid place-items-center"
+            >
               {cvData?.personalDetails.fullName[0]}
             </div>
             <div>
-              <h4 className="text-xl font-bold text-gray-800 group-hover:text-teal-700 transition-colors">
-                {cvData?.personalDetails.fullName}
-              </h4>
-              <p className="text-sm text-gray-500">Mon portfolio</p>
+              <h4 className="font-bold text-lg uppercase">{cvData?.personalDetails.fullName}</h4>
+              <p className="text-xs">Portfolio</p>
             </div>
-          </motion.div>
-
-          {/* Navigation Desktop */}
-          <div className="hidden md:flex items-center gap-8">
-            <ul className="flex gap-8">
-              {navItems.map((item) => (
-                <li key={item.id}>
-                  <motion.a
-                    href={`#${item.id}`}
-                    className="text-gray-600 hover:text-teal-700 font-medium relative group"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {item.label}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-teal-600 transition-all group-hover:w-full" />
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
-
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.05 }}
-              className="px-6 py-3 bg-teal-700 text-white rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:shadow-teal-200/40 transition-shadow"
-            >
-              <Mail className="w-5 h-5" />
-              Discutons
-            </motion.a>
           </div>
 
-          {/* Menu Mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="p-2 text-gray-600 hover:text-teal-700 transition-colors"
-              aria-label="Menu"
-            >
-              <AlignRight className="w-8 h-8" />
-            </button>
+          {/* Menu desktop */}
+          <ul className="gap-10 md:flex hidden hover:*:text-primary *:duration-200">
+            <li>
+              <a href="#home">Accueil</a>
+            </li>
+            <li>
+              <a href="#about">A propos</a>
+            </li>
+            <li>
+              <a href="#skills"> Mon parcours</a>
+            </li>
+            <li>
+              <a href="#contact">Contact</a>
+            </li>
 
-            <AnimatePresence>
-              {isMobileMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 100 }}
-                  className="fixed inset-0 bg-black/20 backdrop-blur-sm rounded-md z-50"
-                  onClick={closeMobileMenu}
-                >
-                  <motion.nav
-                    className="absolute right-5 top-5 h-[70vh] w-80 rounded-lg   bg-slate-200 p-8"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex justify-between items-center mb-12">
-                      <h3 className="text-2xl font-bold text-teal-800">Menu</h3>
-                      <button
-                        onClick={closeMobileMenu}
-                        className="p-2 hover:bg-gray-100 rounded-xl"
-                      >
-                        <X className="w-8 h-8 text-gray-600" />
-                      </button>
-                    </div>
+          </ul>
+          <div className="flex items-center gap-2 ">
+            <a href="#contact">
+              <button className="px-3 py-2.5 hidden shadow-xl z-10  items-center gap-2 w-fit duration-300 border-2 border-gray-600 dark:text-gray-100  text-gray-600 leading-6 dark:bg-slate-800 bg-white  rounded-lg font-bold  md:flex">
+                Discutons
+              </button>
+            </a>
 
-                    <ul className="space-y-6">
-                      {navItems.map((item) => (
-                        <li key={item.id}>
-                          <a
-                            href={`#${item.id}`}
-                            onClick={closeMobileMenu}
-                            className="text-lg text-gray-700 hover:text-teal-700 px-4 py-3 block rounded-xl hover:bg-teal-50 transition-colors"
-                          >
-                            {item.label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <a
-                      href="#contact"
-                      className="mt-12 w-full px-6 py-4 bg-teal-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg"
-                    >
-                      <Mail className="w-6 h-6" />
-                      Contactez-moi
-                    </a>
-                  </motion.nav>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
+
+          {/* Bouton hamburger pour mobile */}
+          <button
+            className="block md:hidden"
+            onClick={toggleMobileMenu}
+          >
+            <AlignRight className="w-8" />
+          </button>
+
+          {/* Menu mobile */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden bg-white border-gray-200 mx-4 my-1 absolute right-0 top-20 w-[50%] rounded-xl overflow-hidden shadow-lg menu-container">
+              <nav aria-label="Mobile Navigation">
+                <ul className="flex flex-col gap-6 text-sm bg-gray-100 p-3">
+                  <li>
+                    <a href="#home">Accueil</a>
+                  </li>
+                  <li>
+                    <a href="#about">A propos</a>
+                  </li>
+                  <li>
+                    <a href="#skills"> Mon parcours</a>
+                  </li>
+                  <li>
+                    <a href="#contact">Contact</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          )}
+
+
         </nav>
-      </motion.header>
+      </header>
       <div>
         <section
           id="home"
           style={{
             backgroundImage: `url(https://preline.co/assets/svg/examples/polygon-bg-element.svg)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: 'cover',
           }}
-          className="min-h-screen container relative overflow-hidden grid place-items-center before:absolute before:top-0 before:left-1/2 before:bg-heroLight before:bg-no-repeat before:bg-top before:w-full before:h-full before:-z-10 before:-translate-x-1/2 dark:before:bg-heroDark"
+          className="min-h-screen container grid place-items-center relative overflow-hidden before:absolute before:top-0 before:start-1/2 before:bg-heroLight before:bg-no-repeat before:bg-top before:size-full before:-z-[1] before:transform before:-translate-x-1/2 dark:before:bg-heroDark"
         >
-          <div className="w-full pt-24 max-w-7xl grid md:grid-cols-6 gap-6 items-center justify-around h-full">
-            {/* Texte d’intro */}
-            <div className="md:col-span-3 lg:col-span-2 text-center md:text-left sm:pl-4">
-              <h5 className="font-medium text-gray-600 dark:text-gray-300 mb-2">
-                Salut et bienvenue !
-              </h5>
-              <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 dark:text-white leading-tight mb-4">
-                Je suis{" "}
-                <span className="text-teal-700 font-extrabold">
-                  {cvData?.personalDetails.fullName}
-                </span>
-              </h1>
-              <p className="text-gray-700 dark:text-gray-300 mb-6 max-w-md">
-                {cvData?.personalDetails.postSeeking}
-              </p>
+          <div
+            id='home'
+            className="w-full pt-20 grid md:grid-cols-6 h-full items-center max-w-7xl justify-around gap-3"
+          >
+            <div
+              className="lg:col-span-2 sm:pl-2 md:col-span-3 md:text-left text-center"
+            >
+              <div>
+                <h5 className="font-medium text-gray-600 dark:text-gray-200">
+                  Salut et bienvenue !
+                </h5>
+                <h1
+                  className="sm:text-5xl text-4xl dark:text-white !leading-normal relative font-medium"
+                >
+                  Je suis <span className="text-primary">{cvData?.personalDetails.fullName}</span> <br />
 
-              <div className="flex flex-wrap items-center gap-4">
-                <button className="flex items-center gap-2 bg-teal-700 text-white px-5 py-3 rounded-lg shadow-lg hover:bg-primary-dark transition">
-                  <Mail className="w-5 h-5" />
-                  Contact
+                </h1>
+                <p>{cvData?.personalDetails.postSeeking}</p>
+                <button className="px-3 py-2.5 shadow-xl z-10 inline-flex items-center gap-2 w-fit duration-300 rounded bg-primary border-2 border-primary text-white mt-5">
+                  <Mail
+                    className='w-4'
+                  /> Contact
                 </button>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 border-b-2 border-gray-700 hover:border-primary transition"
+                <button
+                  className="font-semibold inline-flex items-center gap-2  dark:text-gray-200 border-b-2 border-gray-700 ml-4"
                 >
                   Visiter mon profil
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                  <ExternalLink
+                    className='w-4'
+                  />
+                </button>
               </div>
-
-              <div className="flex items-start gap-4 mt-10 max-w-md mx-auto md:mx-0">
-                <SquareUserRound className="hidden md:block w-32 text-teal-700" />
-                <p className="text-sm leading-relaxed text-justify text-gray-600 dark:text-gray-400">
+              <div className="md:w-96 md:ml-auto flex mt-9 gap-2 dark:text-gray-300">
+                <SquareUserRound
+                  className=" mt-0.5 md:inline-block hidden w-32" />
+                <p className="text-xs text-balance text-justify leading-5 max-w-md px-2 mx-auto">
                   {cvData?.personalDetails.description}
                 </p>
               </div>
-
-              {/* Réseaux sociaux */}
-              <div className="mt-10 flex items-center gap-6 text-gray-600 dark:text-gray-300">
-                <span className="text-xs uppercase tracking-wider">Suivez-moi</span>
-                <div className="flex gap-4">
-                  {/* Facebook */}
-                  <a href="#" aria-label="Facebook" className="social-icon hover:text-teal-700 transition">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-facebook"
-                    >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                    </svg>
+              <div
+                className="flex items-center w-full  md:justify-start justify-start dark:text-gray-200 text-gray-600 gap-6 mt-9"
+              >
+                <p className="text-xs">Suivez moi</p>
+                <div className="flex justify-start gap-3">
+                  <a href="#" className="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
                   </a>
-                  {/* LinkedIn */}
-                  <a href="#" aria-label="LinkedIn" className="social-icon hover:text-teal-700 transition">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-linkedin"
-                    >
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect width="4" height="12" x="2" y="9" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
+                  <a href="#" className="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg>
                   </a>
-                  {/* GitHub */}
-                  <a href="#" aria-label="GitHub" className="social-icon hover:text-teal-700 transition">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-github"
-                    >
-                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                      <path d="M9 18c-4.51 2-5-2-7-2" />
-                    </svg>
+                  <a href="#" className="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /><path d="M9 18c-4.51 2-5-2-7-2" /></svg>
                   </a>
                 </div>
               </div>
             </div>
-
-            {/* Image Profil */}
-            <div className="md:col-span-3 lg:col-span-2 w-full max-w-[380px] mx-auto">
+            <div className="lg:col-span-2 md:col-span-3 w-[380px]">
               <Image
                 src="/profile.png"
-                alt="Photo du Portfolio"
                 width={400}
                 height={400}
-                className="rounded-lg shadow-lg object-cover w-full"
-                priority
+                className="w-full mx-auto md:w-full max-w-80 md:mt-0 mt-5 rounded-lg"
+                alt="Photo du Portfolio"
               />
             </div>
-
-            {/* Statistiques & CV */}
-            <div className="md:col-span-6 lg:col-span-2 bg-gradient-to-l from-gray-100 to-transparent dark:from-slate-800 p-8 rounded-lg h-96 flex flex-col justify-center items-center gap-6 text-center">
-              <ul className="grid grid-cols-2 gap-4 w-full text-gray-700 dark:text-gray-300">
-                <li className="text-4xl font-extrabold">{cvData?.skills.length}+</li>
-                <li className="text-left self-center font-semibold">
-                  Compétences <br />
-                  <span className="text-teal-600">maîtrisées</span>
-                </li>
-                <li className="text-4xl font-extrabold">{cvData?.languages.length}+</li>
-                <li className="text-left self-center font-semibold">
-                  Langues <br />
-                  <span className="text-teal-600">parlées</span>
+            <div
+              className="lg:col-span-2 md:col-span-6 lg:bg-gradient-to-l md:bg-none  bg-gradient-to-l dark:from-slate-800 from-gray-100 lg:h-96 md:h-auto h-96 w-auto"
+            >
+              <ul
+                className="text-2xl data-[slot=count]:*:text-3xl data-[slot=count]:*:font-bold leading-[3.14rem] text-center pt-5 lg:block md:flex items-center justify-between"
+              >
+                <li >{cvData?.skills.length}+</li>
+                <li>Competences <span className="text-primary">maitrises</span></li>
+                <br />
+                <li >{cvData?.languages.length}+</li>
+                <li>Langues <span className="text-primary">parles</span></li>
+                <li>
+                  <button className="border-2 border-gray-600 dark:text-gray-100  text-gray-600 shadow-xl leading-6 dark:bg-slate-800 bg-white  rounded-lg font-bold lg:mt-10 md:mt-0 mt-10 px-3 py-2.5 z-10 inline-flex items-center gap-2 w-fit duration-300">
+                    <Download /> Telecharger CV
+                  </button>
                 </li>
               </ul>
-              <button className="mt-6 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-teal-600 dark:border-gray-300 rounded-lg font-bold shadow-lg hover:bg-teal-600 hover:text-white transition">
-                <Download className="inline-block w-5 h-5 mr-2" />
-                Télécharger CV
-              </button>
             </div>
           </div>
         </section>
-        <section
-          id="about"
-          className="relative pt-24 overflow-hidden"
-          style={{ background: "radial-gradient(circle at 10% 20%, rgba(5, 150, 105, 0.05), transparent 40%)" }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Section Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-3">
-                <User className="w-10 h-10 text-teal-700 animate-bounce-slow" />
-                À Propos de Moi
-              </h2>
-            </motion.div>
+        <section id="about" className="flex items-center justify-center">
+          <div className="flex flex-col max-w-screen-lg w-full  gap-2 items-center justify-center">
 
-            {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Image Column */}
-              <motion.div
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="relative h-[500px] w-full rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl"
-              >
-                <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-black/30 to-black/60" />
+            <div className='flex flex-col justify-between items-center md:flex-row gap-2 w-full'>
+              {/* Image */}
+              <div className="relative h-[450px] w-[380px] rounded-xl shadow-xl overflow-hidden">
                 <motion.div
-                  className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-700 via-teal-300 to-transparent z-20"
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-0 left-0 w-full h-2 bg-gradient-to-b from-primary to-transparent shadow-md z-10"
+                  animate={{ y: ['-100%', '5000%'] }}
+                  transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
                 />
-
                 <Image
                   src="/profile.png"
-                  alt="Photo de profil"
-                  fill
-                  className="object-cover object-top scale-105 hover:scale-100 transition-transform duration-500"
-                  quality={100}
+                  width={400}
+                  height={400}
+                  alt="Photo de Mohamed Gnahoui"
+                  className="object-cover w-[380px] h-full rounded-lg"
                 />
-              </motion.div>
+              </div>
 
-              {/* Text Column */}
-              <div className="space-y-8">
-                {/* Description */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-                    {cvData?.personalDetails.description}
-                  </p>
-                </motion.div>
+              {/* Contenu principal */}
+              <div className="flex flex-col px-6 sm:w-1/2 gap-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                  <User className="w-8 h-8 text-primary" /> À Propos de Moi
+                </h2>
+                <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                  {cvData?.personalDetails.description}
+                </p>
 
                 {/* Compétences */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg"
-                >
-                  <div className="flex items-center gap-3 mb-6">
-                    <GraduationCap className="w-8 h-8 text-teal-700" />
-                    <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Compétences</h3>
-                  </div>
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                    <GraduationCap className="w-6 h-6 text-primary" /> Compétences
+                  </h3>
                   <div className="flex flex-wrap gap-3">
-                    {cvData?.skills.map((skill) => (
-                      <motion.div
+                    {cvData?.skills.map((skill: Skill) => (
+                      <span
                         key={skill.name}
-                        whileHover={{ scale: 1.05 }}
-                        className="px-4 py-2 bg-primary/10 text-teal-600 rounded-full text-sm font-medium border border-primary/20 hover:bg-teal-700 hover:text-white transition-colors"
+                        className="bg-primary text-white rounded-full px-3 py-1 text-sm font-medium hover:bg-blue-600 transition duration-300"
                       >
                         {skill.name}
-                      </motion.div>
+                      </span>
                     ))}
                   </div>
-                </motion.div>
-
-                {/* Langues & Loisirs */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Langues */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg"
-                  >
-                    <div className="flex items-center gap-3 mb-6">
-                      <Earth className="w-8 h-8 text-teal-700" />
-                      <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Langues</h3>
-                    </div>
-                    <ul className="space-y-3">
-                      {cvData?.languages.map((language) => (
-                        <li key={language.name} className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-300">{language.name}</span>
-                          <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-teal-600"
-                              style={{ width: `${language.proficiency}%` }}
-                            />
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-
-                  {/* Loisirs */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 }}
-                    className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg"
-                  >
-                    <div className="flex items-center gap-3 mb-6">
-                      <Drama className="w-8 h-8 text-teal-700" />
-                      <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Loisirs</h3>
-                    </div>
-                    <ul className="grid grid-cols-2 gap-3">
-                      {cvData?.hobbies.map((hobby) => (
-                        <li key={hobby.name} className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                          <span className="w-2 h-2 bg-teal-600 rounded-full flex-shrink-0" />
-                          {hobby.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
                 </div>
+
+
+              </div>
+            </div>
+
+            <div className='flex flex-col justify-between sm:flex-row gap-4 w-full '>
+              {/* Langues */}
+              <div className="mb-6 rounded-lg bordered border-r-2 border-gray-200 p-4 shadow-lg sm:w-1/2">
+                <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                  <Earth className="w-6 h-6 text-primary" /> Langues
+                </h3>
+                <ul>
+                  {cvData?.languages.map((language) => (
+                    <li key={language.name} className="flex justify-between text-gray-600 dark:text-gray-400 text-sm mb-2">
+                      <span>{language.name}</span>
+                      <span className="font-medium">{language.proficiency}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Loisirs */}
+              <div className='mb-6 rounded-lg bordered border-l-2 border-gray-200 p-4 shadow-lg sm:w-1/2'>
+                <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                  <Drama className="w-6 h-6 text-primary" /> Loisirs
+                </h3>
+                <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 text-sm">
+                  {cvData?.hobbies.map((hobby) => (
+                    <li key={hobby.name}>{hobby.name}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
-
-          {/* Effet de particules */}
-          <motion.div
-            className="absolute top-0 left-0 w-full h-full pointer-events-none"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-          >
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-primary rounded-full"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  y: [0, -100],
-                  opacity: [0.5, 0],
-                  scale: [1, 2],
-                }}
-                transition={{
-                  duration: Math.random() * 3 + 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                  ease: "linear",
-                }}
-              />
-            ))}
-          </motion.div>
         </section>
-        <section
-          id="skills"
-          className="relative pt-24 overflow-hidden bg-gradient-to-b from-white/50 to-transparent dark:from-slate-900/50"
-        >
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            {/* Section Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
-            >
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
-                Mon Parcours Professionnel
-              </h1>
-              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Ce parcours est le récit d&apos;une évolution constante, d&apos;une curiosité insatiable et
-                d&apos;une passion pour l&apos;apprentissage.
-              </p>
-            </motion.div>
+        <div id='skills' className='container mx-auto py-20 mt-9'>
 
-            {/* Timeline Container */}
-            <motion.div
-              className="relative"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-            >
-              {/* Timeline Line */}
-              <div className="absolute left-1/2 h-full w-1 bg-gradient-to-b from-teal-700 via-primary/50 to-transparent hidden md:block" />
+          <div className='flex flex-col items-center justify-center'>
+            <h1 className='text-4xl font-bold text-gray-800 pt-2 mb-12'>Mon parcours</h1>
 
-              {/* Experiences */}
-              <div className="space-y-12 md:space-y-24">
-                {/* Expériences Professionnelles */}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 flex items-center gap-3">
-                    <BriefcaseBusiness className="w-8 h-8 text-teal-700" />
-                    Expériences Professionnelles
-                  </h2>
+            {/* Ligne de parcours */}
+            <div className="relative w-full max-w-5xl ">
+              <p className='text-center mb-9'>Ce parcours est le récit d&apos;une évolution constante, d&apos;une curiosité insatiable et d&apos;une passion pour l&apos;apprentissage. Découvrez les étapes marquantes qui ont façonné mon profil, des expériences enrichissantes aux formations déterminantes.</p>
+              <div className="absolute h-[94%] hidden sm:block  border z-0 border-primary/50 dark:border-gray-700 start-1/2 transform -translate-x-1/2 "></div>
 
-                  <div className="space-y-8">
-                    {cvData.experiences.map((experience, index) => (
-                      <motion.div
-                        key={index}
-                        variants={itemVariants}
-                        className={`group relative md:max-w-[calc(50%-80px)] ${index % 2 === 0 ? "md:ml-auto" : "md:mr-auto"
-                          }`}
-                      >
-                        <div className="md:absolute md:inset-0 flex items-center">
-                          <div className={`hidden md:block absolute ${index % 2 === 0 ? "-left-24" : "-right-24"} top-6`}>
-                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                              <BriefcaseBusiness className="w-8 h-8 text-teal-700 group-hover:scale-110 transition-transform" />
-                            </div>
-                          </div>
-                        </div>
+              {/* Expériences professionnelles */}
+              <h2 className='text-left w-full text-lg font-semibold mb-4'>Expériences professionnelles</h2>
 
-                        <div className="bg-white dark:bg-slate-800/50 backdrop-blur-sm p-6 rounded-3xl border border-white/20 shadow-xl hover:shadow-2xl transition-shadow">
-                          <motion.div
-                            whileHover={{ translateX: index % 2 === 0 ? 10 : -10 }}
-                            className="space-y-3"
-                          >
-                            <h3 className="text-xl font-semibold text-teal-700">{experience.jobTitle}</h3>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-                              <span>{experience.companyName}</span>
-                              <span className="w-1 h-1 bg-gray-400 rounded-full" />
-                              <span>{experience.startDate} - {experience.endDate}</span>
-                            </div>
-                            <p className="text-gray-700 dark:text-gray-200">{experience.description}</p>
+              {cvData.experiences.map((experience: Experiences, index) => (
+                <div key={index} className={`mb-8 flex items-start gap-2 z-20 ${index % 2 === 0 ? 'md:justify-end flex-row-reverse ' : 'md:justify-end  '}`}>
+                  <div className="relative size-8 flex justify-center items-center bg-white dark:bg-slate-950 rounded-full shadow-xl">
+                    <BriefcaseBusiness className="text-primary" />
+                  </div>
+                  <div className={`ms-4 md:ms-0 md:me-4 p-6  rounded-lg shadow-xl w-full md:w-1/2 ${index % 2 === 0 ? 'text-left' : 'text-left'}`}>
+                    <h3 className="text-sm font-semibold text-primary">{experience.jobTitle}</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{experience.companyName}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{experience.startDate} - {experience.endDate}</p>
+                    <p className="text-sm text-gray-800 dark:text-gray-200 mt-2">{experience.description}</p>
+                    <ul className="list-disc ms-6 mt-3 space-y-1.5">
+                      {experience.tasks && experience.tasks.map((task, taskIndex) => (
+                        <li key={taskIndex} className="ps-1 text-sm text-gray-600 dark:text-gray-400">{task.content}</li>
 
-                            <ul className="space-y-2 mt-4">
-                              {experience.tasks?.map((task, taskIndex) => (
-                                <li
-                                  key={taskIndex}
-                                  className="flex items-start gap-2 text-gray-600 dark:text-gray-300"
-                                >
-                                  <span 
-      className="w-2 h-2 bg-teal-700 rounded-full mt-2 flex-shrink-0" 
-      aria-hidden="true"
-    ></span>
-                                  <span>{task.content}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </motion.div>
-                        </div>
-                      </motion.div>
-                    ))}
+                      ))}
+                    </ul>
                   </div>
                 </div>
-
-                {/* Formations */}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 flex items-center gap-3">
-                    <GraduationCap className="w-8 h-8 text-teal-700" />
-                    Parcours Académique
-                  </h2>
-
-                  <div className="space-y-8">
-                    {cvData.educations.map((education, index) => (
-                      <motion.div
-                        key={index}
-                        variants={itemVariants}
-                        className={`group relative md:max-w-[calc(50%-80px)] ${index % 2 === 0 ? "md:ml-auto" : "md:mr-auto"
-                          }`}
-                      >
-                        <div className="md:absolute md:inset-0 flex items-center">
-                          <div className={`hidden md:block absolute ${index % 2 === 0 ? "-left-24" : "-right-24"} top-6`}>
-                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                              <GraduationCap className="w-8 h-8 text-teal-700 group-hover:scale-110 transition-transform" />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-slate-800/50 backdrop-blur-sm p-6 rounded-3xl border border-white/20 shadow-xl hover:shadow-2xl transition-shadow">
-                          <motion.div
-                            whileHover={{ translateX: index % 2 === 0 ? 10 : -10 }}
-                            className="space-y-3"
-                          >
-                            <h3 className="text-xl font-semibold text-teal-700">{education.degree}</h3>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-                              <span>{education.school}</span>
-                              <span className="w-1 h-1 bg-gray-400 rounded-full" />
-                              <span>{education.startDate} - {education.endDate}</span>
-                            </div>
-                            <p className="text-gray-700 dark:text-gray-200">{education.description}</p>
-                          </motion.div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Effet de particules */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-            >
-              {[...Array(15)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 bg-primary rounded-full"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                  }}
-                  animate={{
-                    y: [0, -100],
-                    opacity: [0.5, 0],
-                    scale: [1, 2],
-                  }}
-                  transition={{
-                    duration: Math.random() * 3 + 2,
-                    repeat: Infinity,
-                    delay: Math.random() * 2,
-                    ease: "linear",
-                  }}
-                />
               ))}
-            </motion.div>
+
+              {/* Formation */}
+              <h3 className='text-left w-full text-lg font-semibold mb-4'>Ma formation</h3>
+              {cvData?.educations.map((education: Education, index) => (
+                <div key={index} className={`mb-8 flex items-start gap-2  ${index % 2 === 0 ? 'md:justify-end flex-row-reverse ' : 'md:justify-end  '}`}>
+                  <div className=" size-8 flex justify-center items-center bg-white dark:bg-slate-900 rounded-full shadow-md">
+                    <GraduationCap className="text-primary" />
+                  </div>
+                  <div className={`ms-4 md:ms-0 md:me-4 p-6 rounded-lg z-20 shadow-lg w-full md:w-1/2 ${index % 2 !== 0 ? 'text-left' : 'text-left'}`}>
+                    <h3 className="text-sm font-semibold text-primary">{education.degree}</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{education.school}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{education.startDate} - {education.endDate}</p>
+                    <p className="text-sm text-gray-800 dark:text-gray-200 mt-2">{education.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </section>
+        </div>
         <section
           id="contact"
-          className="container relative max-w-4xl mx-auto min-h-screen flex items-center justify-center px-5 mt-9 pt-20"
+          className="container relative max-w-4xl mx-auto min-h-screen flex items-center justify-center px-5 mt-9 pt-10"
         >
           <div className="pb-10">
             <div className="text-center">
-              <h3 className="text-4xl font-bold text-teal-600 pt-2 mb-4">Contactez-moi</h3>
+              <h3 className="text-4xl font-bold text-gray-800 pt-2 mb-4">Contactez-moi</h3>
               <p className="px-4 mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
                 N&apos;hésitez pas à prendre contact. Je suis ouvert aux discussions, aux propositions de projets et aux opportunités de collaboration.
               </p>
@@ -710,7 +407,7 @@ const PortfolioPage: React.FC = () => {
                 className="dark:bg-slate-800 bg-white border border-gray-200 dark:border-gray-700 dark:text-gray-100 text-gray-800 rounded-2xl shadow-2xl mx-auto md:w-2/3 py-14 px-7 w-full"
               >
                 <h3 className="font-semibold text-3xl mb-4">
-                  Envoyez un <br /><span className="text-teal-700">Message</span>
+                  Envoyez un <br /><span className="text-primary">Message</span>
                 </h3>
                 <form
                   ref={formRef}
@@ -754,7 +451,7 @@ const PortfolioPage: React.FC = () => {
 
                   <button
                     type="submit"
-                    className="px-4 py-3 shadow-xl z-10 inline-flex items-center gap-2 w-fit duration-300 rounded-md bg-teal-600 hover:bg-teal-700 text-white font-medium ml-auto"
+                    className="px-4 py-3 shadow-xl z-10 inline-flex items-center gap-2 w-fit duration-300 rounded-md bg-primary hover:bg-blue-700 text-white font-medium ml-auto"
                   >
                     Envoyer
                   </button>
@@ -767,7 +464,7 @@ const PortfolioPage: React.FC = () => {
                 className="bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-700 py-12 px-7 md:absolute lg:-right-9 right-28 rounded-2xl shadow-2xl md:w-2/5 h-5/6 top-28 w-full mx-auto"
               >
                 <h3 className="font-semibold text-2xl border-b pb-4 border-gray-600 dark:text-gray-100">
-                  Retrouvez-moi <br />partout <span className="text-teal-700">.</span>
+                  Retrouvez-moi <br />partout <span className="text-primary">.</span>
                 </h3>
                 <div className="py-4">
                   <p className="text-xs text-gray-600 dark:text-gray-400 leading-5">
@@ -828,25 +525,20 @@ const PortfolioPage: React.FC = () => {
 
 
             <ul className="text-center">
-            <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#home">
-                  Accueil
-                </Link>
-              </li>
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#about">
+                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#about">
                   A propos
-                </Link>
+                </a>
               </li>
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#skills">
+                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#story">
                   Parcours
-                </Link>
+                </a>
               </li>
               <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300">
-                <Link className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#contact">
+                <a className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800" href="#contact">
                   Contact
-                </Link>
+                </a>
               </li>
             </ul>
 
