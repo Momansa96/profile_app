@@ -492,6 +492,7 @@ export async function getAllJobOffers(clerkId: string) {
 
     return jobOffers;
   } catch (error) {
+    
     console.error("Erreur lors de la récupération des offres :", error);
     throw new Error("Impossible de récupérer les offres d'emploi.");
   }

@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { AlignRight } from "lucide-react";
 import { checkAndAddUser } from "../actions";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const Navbar = () => {
     const { isLoaded, isSignedIn, user } = useUser();
@@ -78,7 +80,7 @@ const Navbar = () => {
                                                     {link.label}
                                                 </Link>
                                             )}
-                                            
+
                                         </li>
                                     ))}
                                     {isSignedIn && <UserButton />}
@@ -102,48 +104,64 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                {mobileMenuOpen && (
-                    <div className="md:hidden bg-white border-gray-200 mx-4 my-1 absolute right-0 w-[50%] rounded-xl overflow-hidden shadow-lg menu-container z-9999">
-                        <nav aria-label="Mobile Navigation">
-                            <ul className="flex flex-col gap-6 text-sm bg-gray-100 p-3">
-                                {menuLinks.map((link, index) => (
-                                    <li key={index}>
-                                        {link.label === "Mon Portfolio" ? (
-                                            <a
-                                                className="text-gray-500 transition hover:text-gray-500/75 flex justify-between items-center relative"
-                                                href={link.href}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {link.label}
-                                                <span className="text-sm text-green-700 rounded-lg p-1 border-green-700  badge">Version test</span>
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            key="mobile-menu"
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "tween", duration: 0.8 }}
+                            className="md:hidden bg-white border-gray-200 mx-4 my-1 absolute right-0 w-[50%] rounded-xl overflow-hidden shadow-lg menu-container z-9999"
+                        >
+                            <nav aria-label="Mobile Navigation">
+                                <ul className="flex flex-col gap-6 text-sm bg-gray-100 p-3">
+                                    {menuLinks.map((link, index) => (
+                                        <li key={index}>
+                                            {link.label === "Mon Portfolio" ? (
+                                                <a
+                                                    className="text-gray-500 transition hover:text-gray-500/75 flex justify-between items-center relative"
+                                                    href={link.href}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {link.label}
+                                                    <span className="text-sm text-green-700 rounded-lg p-1 border-green-700 badge">
+                                                        Version test
+                                                    </span>
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    className="text-gray-500 transition hover:text-gray-500/75"
+                                                    href={link.href}
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
 
-                                            </a>
-                                        ) : (
-                                            <Link className="text-gray-500 transition hover:text-gray-500/75" href={link.href}>
-                                                {link.label}
-                                            </Link>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
+                            {!isSignedIn && (
+                                <div className="p-3">
+                                    <Link
+                                        className="block text-center rounded-md bg-teal-600 hover:bg-gray-200 hover:text-teal-600 px-4 py-2.5 text-sm font-medium text-white"
+                                        href="/sign-up"
+                                    >
+                                        S&apos;inscrire
+                                    </Link>
+                                </div>
+                            )}
 
-                        {!isSignedIn && (
-                            <div className="p-3">
-                                <Link className="block text-center rounded-md bg-teal-600 hover:bg-gray-200 hover:text-teal-600 px-4 py-2.5 text-sm font-medium text-white" href="/sign-up">
-                                    S&apos;inscrire
-                                </Link>
-                            </div>
-                        )}
-
-                        {isSignedIn && (
-                            <div className="p-3 flex items-center gap-4 text-teal-600 uppercase font-bold">
-                                Mon Compte <UserButton />
-                            </div>
-                        )}
-                    </div>
-                )}
+                            {isSignedIn && (
+                                <div className="p-3 flex items-center gap-4 text-teal-600 uppercase font-bold">
+                                    Mon Compte <UserButton />
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </header>
         </div>
     );
