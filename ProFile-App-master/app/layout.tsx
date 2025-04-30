@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import LayoutClient from "./LayoutClient";
 
 export const metadata: Metadata = {
   title: "Profile-App",
-  description: "Application de gestion de Cv en ligne et de mise en relation pour les recruteurs.",
+  description:
+    "Application de gestion de Cv en ligne et de mise en relation pour les recruteurs.",
   icons: {
-    icon: "/logo.png", // Pour PNG
-    shortcut: "/logo.png", // Alternative
-    apple: "/logo.png", // Pour iOS
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
@@ -24,21 +22,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="fr" data-theme="light">
-        <body
-
-        >
-          {children}
-          <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          />
+        <body>
+          <LayoutClient>{children}</LayoutClient>
         </body>
       </html>
     </ClerkProvider>
