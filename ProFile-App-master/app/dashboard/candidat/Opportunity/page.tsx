@@ -20,7 +20,9 @@ export default function OpportunityPage() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [applications, setApplications] = useState<{ emploiId: string, status: string }[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
+const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+
 
   const { user } = useUser();
   const clerkId = user?.id ?? '';
@@ -183,20 +185,20 @@ export default function OpportunityPage() {
 
       <div className="flex flex-col md:flex-row gap-4 h-[80vh] container no-scrollbar mt-2 sm:mt-14">
 
-        <div className={`flex flex-col md:flex-row gap-6 h-[80vh] container no-scrollbar `}>
+        <div className={`flex flex-col md:flex-row gap-6 h-[90vh] container no-scrollbar `}>
 
           <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
           {/* Sidebar Gauche */}
-          <aside className={`${sidebarOpen ? "block" : "hidden"} md:block md:w-1/4 h-full overflow-y-auto bg-white p-4 rounded-lg shadow-md`}>
+          <aside className={`${leftSidebarOpen ? "block" : "hidden"} md:block md:w-1/4 h-full overflow-y-auto bg-white p-4 rounded-lg shadow-md`}>
             {/* Section "Nouveautés" */}
-            <div className="flex flex-col bg-white z-20">
-              <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col bg-white z-20 sticky -top-4">
+              <div className="flex justify-between items-center mb-4   ">
                 <h3 className="text-lg font-semibold text-teal-600">Nouveautés</h3>
                 <p className="text-sm text-gray-500">{opportunities.length} Opportunités</p>
               </div>
               {/* Bouton toggle sidebar sur mobile */}
-              <button className="md:hidden p-2 mb-2  bg-teal-500 text-white rounded" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                {sidebarOpen ? "Opportunites" : "Favoris"}
+              <button className="md:hidden p-2 mb-2  bg-teal-500 text-white rounded" onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}>
+                {leftSidebarOpen ? "Opportunites" : "Favoris"}
               </button>
               <select
                 className="select select-bordered w-full mb-4"
@@ -206,7 +208,7 @@ export default function OpportunityPage() {
                 <option value="recent">Plus récent</option>
                 <option value="oldest">Plus ancien</option>
               </select>
-              
+
             </div>
 
             {/* Liste des opportunités */}
@@ -248,7 +250,7 @@ export default function OpportunityPage() {
                       </div>
                     ))}
                   {favorites.length === 0 && (
-                    <p className="text-sm text-gray-500">Aucun Favoris disponible</p>
+                    <p className="text-sm text-gray-500">Aucun favori enregistré.</p>
                   )}
                 </div>
               </div>
@@ -257,14 +259,14 @@ export default function OpportunityPage() {
 
 
           {/* Contenu principal */}
-          <div className="flex-1 h-full overflow-y-auto bg-gray-50 p-1 pt-0  rounded-lg shadow-md relative">
+          <div className="flex-1 h-full overflow-y-auto  bg-gray-50 p-1 pt-0  rounded-lg shadow-md relative">
             {/* Filtres */}
-            <div className="flex flex-wrap w-full gap-2 bg-gray-50 mb-2 sticky  md:top-0 md:left-4 md:right-4 p-2  z-20 rounded-md ">
+            <div className="flex flex-wrap w-full gap-2 bg-gray-50 mb-2 sticky  md:top-0 md:left-4 md:right-4 p-2   rounded-md ">
               {/* Champ de recherche */}
               <div className="flex gap-2 relative w-full md:w-auto">
                 {/* Bouton toggle sidebar sur mobile */}
-                <button className="md:hidden p-2  bg-teal-600 text-white rounded" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  {sidebarOpen ? "Fermer Sidebar" : "Favoris"}
+                <button className="md:hidden p-2  bg-teal-600 text-white rounded" onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}>
+                  {leftSidebarOpen ? "Fermer Sidebar" : "Favoris"}
                 </button>
                 <input
                   type="text"
@@ -291,18 +293,23 @@ export default function OpportunityPage() {
               </select>
 
               {/* Filtre par localisation */}
-              <select
-                className="select select-bordered w-full md:w-auto"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-              >
-                <option value="">Localisation</option>
-                {Array.from(new Set(opportunities.map((job) => job.locationJob))).map((location, index) => (
-                  <option key={index} value={location}>
-                    {location}
-                  </option>
-                ))}
-              </select>
+              <div className="flex gap-2 relative w-full md:w-auto">
+                <select
+                  className="select select-bordered w-full md:w-auto"
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                >
+                  <option value="">Localisation</option>
+                  {Array.from(new Set(opportunities.map((job) => job.locationJob))).map((location, index) => (
+                    <option key={index} value={location}>
+                      {location}
+                    </option>
+                  ))}
+                </select>
+                <button className="md:hidden p-2  bg-teal-600 text-white rounded" onClick={() => setRightSidebarOpen(!rightSidebarOpen)}>
+                  {rightSidebarOpen ? "Fermer Sidebar" : "Candidatures"}
+                </button>
+              </div>
             </div>
 
 
@@ -336,8 +343,14 @@ export default function OpportunityPage() {
           </div>
 
           {/* Sidebar Droite (Suivi des Candidatures) */}
-          <aside className="hidden md:block md:w-1/4 h-full overflow-y-auto bg-gray-100 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-4 text-teal-600">Suivre mes candidatures</h3>
+          <aside className={`${rightSidebarOpen ? "block" : "hidden"}  md:block md:w-1/4 h-full overflow-y-auto bg-white p-4 rounded-lg shadow-md`}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold mb-4 text-teal-600">Suivre mes candidatures</h3>
+              <button className="md:hidden p-2 mb-2  bg-teal-500 text-white rounded" onClick={() => setRightSidebarOpen(!rightSidebarOpen)}>
+                {rightSidebarOpen ? "Opportunites" : "Favoris"}
+              </button>
+            </div>
             {applications.length > 0 ? (
               opportunities
                 .filter((job) => applications.some(app => app.emploiId === job.id))
@@ -373,7 +386,7 @@ export default function OpportunityPage() {
                   </div>
                 ))
             ) : (
-              <p className="text-sm text-gray-500">En cours de chargement...</p>
+              <p className="text-sm text-gray-500">Aucune candidature pour le moment.</p>
             )}
           </aside>
 
@@ -402,5 +415,4 @@ export default function OpportunityPage() {
 
   );
 }
-
 
