@@ -248,7 +248,7 @@ export default function OpportunityPage() {
                       </div>
                     ))}
                   {favorites.length === 0 && (
-                    <p className="text-sm text-gray-500">Aucun favori enregistré.</p>
+                    <p className="text-sm text-gray-500">Aucun Favoris disponible</p>
                   )}
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function OpportunityPage() {
                   </div>
                 ))
             ) : (
-              <p className="text-sm text-gray-500">Aucune candidature pour le moment.</p>
+              <p className="text-sm text-gray-500">En cours de chargement...</p>
             )}
           </aside>
 
