@@ -1,5 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
+import { users } from "@clerk/nextjs/server";
 import { CvData } from "@/type";
 import { put } from "@vercel/blob";
 
@@ -10,29 +11,36 @@ type CandidatureStatus = "En cours" | "Accepter" | "Rejeter";
 
 
 //Fonction generale verifier et ajouter tout nouvel utilisateur
-export async function checkAndAddUser( email: string, fullName: string, clerkId: string,) {
+export async function checkAndAddUser(
+  email: string,
+  fullName: string,
+  clerkId: string,
+  role: "CANDIDAT" | "RECRUTEUR" = "CANDIDAT"
+) {
   try {
+    // 1. Stocker dans ta base Prisma
     const user = await prisma.user.upsert({
-      where: { clerkId },  // Recherche par l'ID Clerk
-      update: {},  // Pas de mise à jour dans ce cas, on garde les infos existantes
+      where: { clerkId },
+      update: {},
       create: {
         email,
         fullName,
-        clerkId,   // Stocker l'ID Clerk
-        role: "CANDIDAT",
+        clerkId,
+        role, // stocké dans ta propre base
       },
     });
 
-    
-    console.log(`Utilisateur ${user.fullName} vient de se connecter.`);
-    console.log("ID Clerk:", user.clerkId);
-    
+    // 2. Stocker le rôle aussi dans Clerk (publicMetadata)
+    await users.updateUser(clerkId, {
+      publicMetadata: {
+        role: role,
+      },
+    });
+
+    console.log(`Utilisateur ${user.fullName} connecté avec le rôle ${role}.`);
     return { ...user, success: true };
   } catch (error) {
-    console.error("Erreur lors de la vérification ou de l'ajout de l'utilisateur:", error);
-    
-      console.error("Erreur inconnue:", error);
-    
+    console.error("Erreur lors de l'ajout de l'utilisateur :", error);
     throw new Error("Impossible de vérifier ou d'ajouter l'utilisateur.");
   }
 }
