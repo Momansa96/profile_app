@@ -29,7 +29,7 @@ export default clerkMiddleware(async (auth, req) => {
     const role = user.publicMetadata?.role || 'CANDIDAT';
 
     const destination =
-      role === 'RECRUTEUR' ? '/dashboard/recruter' : '/dashboard/candidat/Opportunity';
+      role === 'RECRUTEUR' ? '/dashboard/candidat/Opportunity' : '/dashboard/recruter';
 
     return NextResponse.redirect(new URL(destination, req.url));
   }
