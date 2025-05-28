@@ -191,7 +191,7 @@ const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
           {/* Sidebar Gauche */}
           <aside className={`${leftSidebarOpen ? "block" : "hidden"} md:block md:w-1/4 h-full overflow-y-auto bg-white p-4 rounded-lg shadow-md`}>
             {/* Section "Nouveautés" */}
-            <div className="flex flex-col bg-white z-20 sticky -top-4">
+            <div className="flex flex-col bg-white  sticky -top-4">
               <div className="flex justify-between items-center mb-4   ">
                 <h3 className="text-lg font-semibold text-teal-600">Nouveautés</h3>
                 <p className="text-sm text-gray-500">{opportunities.length} Opportunités</p>

@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
-import { users } from "@clerk/nextjs/server";
+import { users } from '@clerk/clerk-sdk-node';
 import { CvData } from "@/type";
 import { put } from "@vercel/blob";
 
