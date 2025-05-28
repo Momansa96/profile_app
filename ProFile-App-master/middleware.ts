@@ -25,14 +25,17 @@ export default clerkMiddleware(async (auth, req) => {
 
   // 🎯 Redirection dynamique si l'utilisateur arrive sur /dashboard
   if (url.pathname === '/dashboard') {
-    const user = await users.getUser(userId);
-    const role = user.publicMetadata?.role || 'CANDIDAT';
+  const user = await users.getUser(userId);
+  const role = user.publicMetadata?.role || 'CANDIDAT';
 
-    const destination =
-      role === 'RECRUTEUR' ? '/dashboard/candidat/Opportunity' : '/dashboard/recruter';
+  const destination =
+    role === 'RECRUTEUR'
+      ? '/dashboard/recruter'           // ✅ Page recruteur
+      : '/dashboard/candidat/Opportunity'; // ✅ Page candidat
 
-    return NextResponse.redirect(new URL(destination, req.url));
-  }
+  return NextResponse.redirect(new URL(destination, req.url));
+}
+
 
   // ✅ Pour toutes les autres routes protégées, continuer
 });
