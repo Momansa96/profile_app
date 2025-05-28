@@ -1,21 +1,17 @@
 "use server";
 import prisma from "@/lib/db";
-import { users } from '@clerk/clerk-sdk-node';
+import { users } from "@clerk/clerk-sdk-node";
 import { CvData } from "@/type";
 import { put } from "@vercel/blob";
 
-
 type CandidatureStatus = "En cours" | "Accepter" | "Rejeter";
-
-
-
 
 //Fonction generale verifier et ajouter tout nouvel utilisateur
 export async function checkAndAddUser(
   email: string,
   fullName: string,
   clerkId: string,
-  role: 'CANDIDAT' | 'RECRUTEUR' = 'CANDIDAT'
+  role: "CANDIDAT" | "RECRUTEUR" = "CANDIDAT"
 ) {
   try {
     const user = await prisma.user.upsert({
@@ -29,10 +25,17 @@ export async function checkAndAddUser(
       },
     });
 
-    await users.updateUser(clerkId, {
-      publicMetadata: { role },
-    });
+    const clerkUser = await users.getUser(clerkId);
 
+    if (clerkUser.publicMetadata?.role !== role) {
+      await users.updateUser(clerkId, {
+        publicMetadata: { role },
+      });
+    }
+    console.log(
+      "Utilisateur vérifié ou ajouté avec succès avec pour role:",
+      role
+    );
     return { ...user, success: true };
   } catch (error) {
     console.error("Erreur lors de l'ajout de l'utilisateur :", error);
@@ -54,12 +57,11 @@ export async function getJobs() {
 }
 
 export async function uploadImage(formData: FormData) {
-
-  const imageFile = formData.get('file') as File; // Récupère le fichier depuis le formulaire.
+  const imageFile = formData.get("file") as File; // Récupère le fichier depuis le formulaire.
 
   // Upload du fichier vers le Blob Store.
   const blob = await put(imageFile.name, imageFile, {
-    access: 'public', // Rend le fichier accessible publiquement.
+    access: "public", // Rend le fichier accessible publiquement.
   });
 
   return blob; // Retourne les informations du blob (URL, etc.).
@@ -85,11 +87,12 @@ export async function saveCvData(cvData: CvData, clerkId: string) {
           create: cvData.experiences.map((exp) => ({
             jobTitle: exp.jobTitle,
             companyName: exp.companyName,
-            startDate: new Date(exp.startDate), 
-            endDate: new Date(exp.endDate),     
+            startDate: new Date(exp.startDate),
+            endDate: new Date(exp.endDate),
             description: exp.description,
             tasks: {
-              create: exp.tasks.map(task => ({  // Assurez-vous que exp.tasks existe et est un tableau
+              create: exp.tasks.map((task) => ({
+                // Assurez-vous que exp.tasks existe et est un tableau
                 content: task.content,
               })),
             },
@@ -100,8 +103,8 @@ export async function saveCvData(cvData: CvData, clerkId: string) {
           create: cvData.educations.map((edu) => ({
             degree: edu.degree,
             school: edu.school,
-            startDate: new Date(edu.startDate), 
-            endDate: new Date(edu.endDate),     
+            startDate: new Date(edu.startDate),
+            endDate: new Date(edu.endDate),
             description: edu.description,
           })),
         },
@@ -149,10 +152,11 @@ export async function saveCvData(cvData: CvData, clerkId: string) {
             jobTitle: exp.jobTitle,
             companyName: exp.companyName,
             startDate: new Date(exp.startDate), // Convertir en Date si nécessaire
-            endDate: new Date(exp.endDate),     // Convertir en Date si nécessaire
+            endDate: new Date(exp.endDate), // Convertir en Date si nécessaire
             description: exp.description,
             tasks: {
-              create: exp.tasks.map(task => ({  // Assurez-vous que exp.tasks existe et est un tableau
+              create: exp.tasks.map((task) => ({
+                // Assurez-vous que exp.tasks existe et est un tableau
                 content: task.content,
               })),
             },
@@ -163,7 +167,7 @@ export async function saveCvData(cvData: CvData, clerkId: string) {
             degree: edu.degree,
             school: edu.school,
             startDate: new Date(edu.startDate), // Convertir en Date si nécessaire
-            endDate: new Date(edu.endDate),     // Convertir en Date si nécessaire
+            endDate: new Date(edu.endDate), // Convertir en Date si nécessaire
             description: edu.description,
           })),
         },
@@ -200,13 +204,12 @@ export async function saveCvData(cvData: CvData, clerkId: string) {
   }
 }
 
-
 export async function getFavorites(clerkId: string) {
   const favorites = await prisma.favorite.findMany({
     where: { clerkId },
     select: { emploiId: true },
   });
-  return favorites.map(fav => fav.emploiId);
+  return favorites.map((fav) => fav.emploiId);
 }
 
 export async function addFavorite(clerkId: string, emploiId: string) {
@@ -235,7 +238,6 @@ export async function removeFavorite(clerkId: string, emploiId: string) {
     where: { clerkId, emploiId },
   });
 }
-
 
 // Fonction pour récupérer les candidatures d'un utilisateur
 export async function getApplications(clerkId: string) {
@@ -301,40 +303,40 @@ export async function getCvData(clerkId: string) {
       },
     });
     const formatDate = (date: Date): string => {
-      return date.toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
+      return date.toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
-    }
-    if (!cv) throw new Error('CV not found');
+    };
+    if (!cv) throw new Error("CV not found");
     return {
       personalDetails: {
-        fullName: cv.fullName || '',
-        email: cv.email || '',
-        phone: cv.phone || '',
-        linkedin: cv.linkedin || '',
-        address: cv.address || '',
-        postSeeking: cv.postSeeking || '',
-        description: cv.description || '',
-        photoUrl: cv.photoUrl || '',
+        fullName: cv.fullName || "",
+        email: cv.email || "",
+        phone: cv.phone || "",
+        linkedin: cv.linkedin || "",
+        address: cv.address || "",
+        postSeeking: cv.postSeeking || "",
+        description: cv.description || "",
+        photoUrl: cv.photoUrl || "",
       },
-      experiences: cv.experiences.map((experience) =>({
+      experiences: cv.experiences.map((experience) => ({
         jobTitle: experience.jobTitle,
         companyName: experience.companyName,
         startDate: formatDate(experience.startDate),
         endDate: formatDate(experience.endDate),
-        description: experience.description || '',
+        description: experience.description || "",
         tasks: experience.tasks.map((task) => ({
           content: task.content,
         })),
-      })) ,
+      })),
       educations: cv.educations.map((educcation) => ({
         degree: educcation.degree,
         school: educcation.school,
         startDate: formatDate(educcation.startDate),
         endDate: formatDate(educcation.endDate),
-        description: educcation.description || '',
+        description: educcation.description || "",
       })),
       languages: cv.languages.map((language) => ({
         name: language.name,
@@ -352,9 +354,9 @@ export async function getCvData(clerkId: string) {
       })),
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération des données du CV:', error);
-    
-    throw new Error('Impossible de récupérer les données du CV.');
+    console.error("Erreur lors de la récupération des données du CV:", error);
+
+    throw new Error("Impossible de récupérer les données du CV.");
   }
 }
 
@@ -383,12 +385,17 @@ type JobOffer = {
 
 //Fonction pour creer une offre d'emploi
 export async function createJobOffer(
-  jobData: Omit<JobOffer, 'id'>, 
+  jobData: Omit<JobOffer, "id">,
   clerkId: string
 ): Promise<{ success: boolean; job?: JobOffer; error?: string }> {
   try {
     // Validation des données d'entrée
-    if (!jobData.jobTitle || !jobData.companyName || !jobData.locationJob || !jobData.typeJob) {
+    if (
+      !jobData.jobTitle ||
+      !jobData.companyName ||
+      !jobData.locationJob ||
+      !jobData.typeJob
+    ) {
       throw new Error("Les champs obligatoires sont manquants.");
     }
 
@@ -415,7 +422,7 @@ export async function createJobOffer(
 //Fonction pour mettre a jour une offre d'emploi
 export async function updateJobOffer(
   jobId: string,
-  jobData: Omit<JobOffer, 'id'>,
+  jobData: Omit<JobOffer, "id">,
   clerkId: string
 ): Promise<{ success: boolean; job?: JobOffer; error?: string }> {
   try {
@@ -429,7 +436,9 @@ export async function updateJobOffer(
     }
 
     if (job.clerkId !== clerkId) {
-      throw new Error("Vous n'êtes pas autorisé à mettre à jour cette offre d'emploi.");
+      throw new Error(
+        "Vous n'êtes pas autorisé à mettre à jour cette offre d'emploi."
+      );
     }
 
     // Mise à jour de l'offre d'emploi
@@ -452,8 +461,11 @@ export async function updateJobOffer(
   }
 }
 
-//Fonction pour supprimer une offre d'emploi 
-export async function deleteJobOffer(jobId: string, clerkId: string): Promise<{ success: boolean; error?: string }> {
+//Fonction pour supprimer une offre d'emploi
+export async function deleteJobOffer(
+  jobId: string,
+  clerkId: string
+): Promise<{ success: boolean; error?: string }> {
   try {
     // Vérification si l'offre d'emploi existe et appartient à l'utilisateur
     const job = await prisma.emploi.findUnique({
@@ -465,7 +477,9 @@ export async function deleteJobOffer(jobId: string, clerkId: string): Promise<{ 
     }
 
     if (job.clerkId !== clerkId) {
-      throw new Error("Vous n'êtes pas autorisé à supprimer cette offre d'emploi.");
+      throw new Error(
+        "Vous n'êtes pas autorisé à supprimer cette offre d'emploi."
+      );
     }
 
     // Suppression de l'offre d'emploi
@@ -500,21 +514,26 @@ export async function getAllJobOffers(clerkId: string) {
   }
 }
 
-
 export async function getCandidateFavorites(clerkId: string) {
   try {
     const favorites = await prisma.recruterFavorite.findMany({
       where: { clerkId },
       select: { candidateId: true },
     });
-    return favorites.map(fav => fav.candidateId);
+    return favorites.map((fav) => fav.candidateId);
   } catch (error) {
-    console.error("Erreur lors de la récupération des favoris des candidats :", error);
+    console.error(
+      "Erreur lors de la récupération des favoris des candidats :",
+      error
+    );
     throw new Error("Impossible de récupérer les favoris des candidats.");
   }
 }
 
-export async function addCandidateFavorite(clerkId: string, candidateId: string) {
+export async function addCandidateFavorite(
+  clerkId: string,
+  candidateId: string
+) {
   try {
     // Vérifiez que le candidat existe
     const candidate = await prisma.cv.findUnique({
@@ -535,13 +554,19 @@ export async function addCandidateFavorite(clerkId: string, candidateId: string)
   }
 }
 
-export async function removeCandidateFavorite(clerkId: string, candidateId: string) {
+export async function removeCandidateFavorite(
+  clerkId: string,
+  candidateId: string
+) {
   try {
     await prisma.recruterFavorite.deleteMany({
       where: { clerkId, candidateId },
     });
   } catch (error) {
-    console.error("Erreur lors de la suppression du favori du candidat :", error);
+    console.error(
+      "Erreur lors de la suppression du favori du candidat :",
+      error
+    );
     throw new Error("Impossible de supprimer le favori du candidat.");
   }
 }
@@ -560,29 +585,31 @@ export async function getJobApplications(clerkId: string) {
       },
     });
 
-    return applications.map(app => {
-      if (!app.cv || !app.emploi) {
-        console.warn(`Candidature avec ID ${app.id} n'a pas de CV associé.`);
-        return null; // ou un objet par défaut si vous préférez
-      }
+    return applications
+      .map((app) => {
+        if (!app.cv || !app.emploi) {
+          console.warn(`Candidature avec ID ${app.id} n'a pas de CV associé.`);
+          return null; // ou un objet par défaut si vous préférez
+        }
 
-      return {
-        id: app.id,
-        clerkId: app.cv.clerkId,
-        fullName: app.cv.fullName,
-        email: app.cv.email,
-        phone: app.cv.phone,
-        linkedin: app.cv.linkedin,
-        address: app.cv.address,
-        postSeeking: app.cv.postSeeking,
-        description: app.cv.description,
-        photoUrl: "/Avatar6.jpg",
-        pdfUrl: app.cv.pdfUrl,
-        jobTitle: app.emploi.jobTitle,
-        createdAt: app.createdAt,
-        updatedAt: app.updatedAt,
-      };
-    }).filter(app => app !== null); // Filtrer les candidatures sans CV
+        return {
+          id: app.id,
+          clerkId: app.cv.clerkId,
+          fullName: app.cv.fullName,
+          email: app.cv.email,
+          phone: app.cv.phone,
+          linkedin: app.cv.linkedin,
+          address: app.cv.address,
+          postSeeking: app.cv.postSeeking,
+          description: app.cv.description,
+          photoUrl: "/Avatar6.jpg",
+          pdfUrl: app.cv.pdfUrl,
+          jobTitle: app.emploi.jobTitle,
+          createdAt: app.createdAt,
+          updatedAt: app.updatedAt,
+        };
+      })
+      .filter((app) => app !== null); // Filtrer les candidatures sans CV
   } catch (error) {
     console.error("Erreur lors de la récupération des candidatures :", error);
     throw new Error("Impossible de récupérer les candidatures.");
@@ -593,7 +620,6 @@ export async function updateCandidateStatus(
   candidateId: string,
   newStatus: CandidatureStatus
 ) {
-  
   try {
     if (!["En cours", "Accepter", "Rejeter"].includes(newStatus)) {
       throw new Error("Statut invalide");
@@ -605,7 +631,10 @@ export async function updateCandidateStatus(
     });
     return { success: true, data: updatedCandidate };
   } catch (error) {
-    console.error("Erreur lors de la mise à jour du statut du candidat:", error);
+    console.error(
+      "Erreur lors de la mise à jour du statut du candidat:",
+      error
+    );
     return { success: false, error: "Impossible de mettre à jour le statut." };
   }
 }

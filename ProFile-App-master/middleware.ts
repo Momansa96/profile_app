@@ -30,8 +30,8 @@ export default clerkMiddleware(async (auth, req) => {
 
   const destination =
     role === 'RECRUTEUR'
-      ? '/dashboard/recruter'           // ✅ Page recruteur
-      : '/dashboard/candidat/Opportunity'; // ✅ Page candidat
+      ? '/dashboard/recruter'           
+      : '/dashboard/candidat/Opportunity'; 
 
   return NextResponse.redirect(new URL(destination, req.url));
 }
