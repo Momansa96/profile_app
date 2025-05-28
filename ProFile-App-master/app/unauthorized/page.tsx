@@ -9,7 +9,7 @@ export default function UnauthorizedPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-white px-4 text-center">
       <h1 className="text-4xl font-bold text-red-600 mb-4">Accès interdit</h1>
       <p className="text-gray-700 mb-6">
-        Vous n'avez pas les droits nécessaires pour accéder à cette page.
+        Vous n&apos;avez pas les droits nécessaires pour accéder à cette page.
       </p>
       <button
         onClick={() => router.back()}
