@@ -15,10 +15,9 @@ export async function checkAndAddUser(
   email: string,
   fullName: string,
   clerkId: string,
-  role: "CANDIDAT" | "RECRUTEUR" = "CANDIDAT"
+  role: 'CANDIDAT' | 'RECRUTEUR' = 'CANDIDAT'
 ) {
   try {
-    // 1. Stocker dans ta base Prisma
     const user = await prisma.user.upsert({
       where: { clerkId },
       update: {},
@@ -26,18 +25,14 @@ export async function checkAndAddUser(
         email,
         fullName,
         clerkId,
-        role, // stocké dans ta propre base
+        role,
       },
     });
 
-    // 2. Stocker le rôle aussi dans Clerk (publicMetadata)
     await users.updateUser(clerkId, {
-      publicMetadata: {
-        role: role,
-      },
+      publicMetadata: { role },
     });
 
-    console.log(`Utilisateur ${user.fullName} connecté avec le rôle ${role}.`);
     return { ...user, success: true };
   } catch (error) {
     console.error("Erreur lors de l'ajout de l'utilisateur :", error);
