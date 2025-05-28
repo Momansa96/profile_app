@@ -15,29 +15,53 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const url = req.nextUrl;
 
-  // 🔓 Autoriser les routes publiques
+  const allowedRoutes = {
+  CANDIDAT: [
+    '/dashboard/candidat',
+    '/dashboard/candidat/Opportunity',
+  ],
+  RECRUTEUR: [
+    '/dashboard/recruter',
+  ],
+};
+
+
   if (isPublicRoute(req)) return;
 
-  // 🔐 Si non connecté, rediriger vers la page de connexion
   if (!userId) {
     return NextResponse.redirect(new URL('/sign-in', req.url));
   }
 
-  // 🎯 Redirection dynamique si l'utilisateur arrive sur /dashboard
-  if (url.pathname === '/dashboard') {
   const user = await users.getUser(userId);
   const role = user.publicMetadata?.role || 'CANDIDAT';
 
-  const destination =
-    role === 'RECRUTEUR'
-      ? '/dashboard/recruter'           
-      : '/dashboard/candidat/Opportunity'; 
+  // 🎯 Redirection dynamique à la connexion
+  if (url.pathname === '/dashboard') {
+    const destination =
+      role === 'RECRUTEUR'
+        ? '/dashboard/recruter'
+        : '/dashboard/candidat/Opportunity';
 
-  return NextResponse.redirect(new URL(destination, req.url));
+    return NextResponse.redirect(new URL(destination, req.url));
+  }
+
+  // Bloque les candidats qui accèdent à une route réservée aux recruteurs
+if (
+  role === 'CANDIDAT' &&
+  url.pathname.startsWith('/dashboard/recruter')
+) {
+  return NextResponse.redirect(new URL('/unauthorized', req.url));
 }
 
+// Bloque les recruteurs qui accèdent à une route réservée aux candidats
+if (
+  role === 'RECRUTEUR' &&
+  url.pathname.startsWith('/dashboard/candidat')
+) {
+  return NextResponse.redirect(new URL('/unauthorized', req.url));
+}
 
-  // ✅ Pour toutes les autres routes protégées, continuer
+  // ✅ Tout le reste passe
 });
 
 
