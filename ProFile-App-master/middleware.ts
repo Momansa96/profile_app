@@ -15,53 +15,47 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const url = req.nextUrl;
 
-  const allowedRoutes = {
-  CANDIDAT: [
-    '/dashboard/candidat',
-    '/dashboard/candidat/Opportunity',
-  ],
-  RECRUTEUR: [
-    '/dashboard/recruter',
-  ],
-};
-
-
+  // 🔓 Routes publiques : pas de vérification
   if (isPublicRoute(req)) return;
 
+  // 🚫 Pas connecté : redirection vers sign-in
   if (!userId) {
     return NextResponse.redirect(new URL('/sign-in', req.url));
   }
 
+  // 🔍 Récupération du rôle depuis Clerk
   const user = await users.getUser(userId);
-  const role = user.publicMetadata?.role || 'CANDIDAT';
+  const role = (user.publicMetadata?.role as string) || 'CANDIDAT';
 
-  // 🎯 Redirection dynamique à la connexion
-  if (url.pathname === '/dashboard') {
+  // 🎯 Redirection dynamique à la connexion (IMPORTANT : doit être AVANT les blocages)
+  if (url.pathname === '/dashboard' || url.pathname === '/dashboard/') {
     const destination =
       role === 'RECRUTEUR'
         ? '/dashboard/recruter'
         : '/dashboard/candidat/Opportunity';
 
+    console.log('➡️  Redirection vers:', destination);
     return NextResponse.redirect(new URL(destination, req.url));
   }
 
-  // Bloque les candidats qui accèdent à une route réservée aux recruteurs
-if (
-  role === 'CANDIDAT' &&
-  url.pathname.startsWith('/dashboard/recruter')
-) {
-  return NextResponse.redirect(new URL('/unauthorized', req.url));
-}
+  // 🚫 Bloque les CANDIDATS qui accèdent aux routes RECRUTEUR
+  if (
+    role === 'CANDIDAT' &&
+    url.pathname.startsWith('/dashboard/recruter')
+  ) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
+  }
 
-// Bloque les recruteurs qui accèdent à une route réservée aux candidats
-if (
-  role === 'RECRUTEUR' &&
-  url.pathname.startsWith('/dashboard/candidat')
-) {
-  return NextResponse.redirect(new URL('/unauthorized', req.url));
-}
+  // 🚫 Bloque les RECRUTEURS qui accèdent aux routes CANDIDAT
+  if (
+    role === 'RECRUTEUR' &&
+    url.pathname.startsWith('/dashboard/candidat')
+  ) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
+  }
 
   // ✅ Tout le reste passe
+  console.log('✅ Accès autorisé');
 });
 
 

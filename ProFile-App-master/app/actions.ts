@@ -11,34 +11,48 @@ export async function checkAndAddUser(
   email: string,
   fullName: string,
   clerkId: string,
-  role: "CANDIDAT" | "RECRUTEUR" = "CANDIDAT"
+  role?: "CANDIDAT" | "RECRUTEUR"  // ✅ Optionnel maintenant
 ) {
   try {
+    // 🔍 Récupérer le rôle depuis Clerk (source de vérité)
+    const clerkUser = await users.getUser(clerkId);
+    const clerkRole = (clerkUser.publicMetadata?.role as "CANDIDAT" | "RECRUTEUR") || "CANDIDAT";
+
+    // ✅ Utiliser le rôle de Clerk si non fourni en paramètre
+    const finalRole = role || clerkRole;
+
+    console.log(`🔐 checkAndAddUser - clerkId: ${clerkId}, Role Clerk: ${clerkRole}, Role fourni: ${role}, Role final: ${finalRole}`);
+
     const user = await prisma.user.upsert({
       where: { clerkId },
-      update: {},
+      update: {
+        email,
+        fullName,
+        role: finalRole,  // ✅ Met à jour le rôle dans la DB
+      },
       create: {
         email,
         fullName,
         clerkId,
-        role,
+        role: finalRole,
       },
     });
 
-    const clerkUser = await users.getUser(clerkId);
-
-    if (clerkUser.publicMetadata?.role !== role) {
+    // ✅ Synchroniser Clerk UNIQUEMENT si le rôle a changé
+    if (clerkRole !== finalRole) {
+      console.log(`🔄 Mise à jour du rôle Clerk: ${clerkRole} → ${finalRole}`);
       await users.updateUser(clerkId, {
-        publicMetadata: { role },
+        publicMetadata: { role: finalRole },
       });
     }
+
     console.log(
-      "Utilisateur vérifié ou ajouté avec succès avec pour role:",
-      role
+      "✅ Utilisateur vérifié ou ajouté avec succès avec pour role:",
+      finalRole
     );
     return { ...user, success: true };
   } catch (error) {
-    console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+    console.error("❌ Erreur lors de l'ajout de l'utilisateur :", error);
     throw new Error("Impossible de vérifier ou d'ajouter l'utilisateur.");
   }
 }
