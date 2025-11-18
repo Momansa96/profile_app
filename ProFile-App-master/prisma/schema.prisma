@@ -16,7 +16,7 @@ model User {
   role      String   @default("CANDIDAT") // "CANDIDAT" ou "RECRUTEUR"
   cv        Cv?
   emplois   Emploi[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -25,6 +25,11 @@ model User {
   Candidature Candidature[]
 
   RecruterFavorite RecruterFavorite[]
+
+  // Relations pour le système d'affiliation
+  affiliateLink         AffiliateLink?
+  referredSubscriptions AffiliateTransaction[] @relation("ReferredUser")
+  subscription          Subscription?
 }
 
 model Cv {
@@ -166,6 +171,77 @@ model RecruterFavorite {
 
   user        User     @relation(fields: [clerkId], references: [clerkId])
   candidate   Cv       @relation(fields: [candidateId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ========================================
+// SYSTÈME D'AFFILIATION
+// ========================================
+
+// Lien d'affiliation unique par candidat
+model AffiliateLink {
+  id            String   @id @default(uuid())
+  code          String   @unique // Code unique (ex: "JOHN2024ABC")
+  clerkId       String   @unique // Un seul lien par candidat
+  user          User     @relation(fields: [clerkId], references: [clerkId])
+
+  // Statistiques
+  clicks        Int      @default(0) // Nombre de clics sur le lien
+  conversions   Int      @default(0) // Nombre d'achats via le lien
+  totalEarned   Float    @default(0) // Cashback total gagné (en FCFA)
+
+  // Relations
+  transactions  AffiliateTransaction[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Transaction d'affiliation (quand un filleul achète)
+model AffiliateTransaction {
+  id              String   @id @default(uuid())
+  affiliateLinkId String
+  affiliateLink   AffiliateLink @relation(fields: [affiliateLinkId], references: [id])
+
+  // Informations du filleul qui a acheté
+  referredClerkId String
+  referredUser    User   @relation("ReferredUser", fields: [referredClerkId], references: [clerkId])
+
+  // Détails de la transaction
+  subscriptionType String  // "CANDIDAT" ou "ENTREPRISE"
+  amount           Float   // Montant payé par le filleul (en FCFA)
+  commission       Float   // 10% du montant (en FCFA)
+  status           String  @default("PENDING") // PENDING, PAID, CANCELLED
+
+  // Métadonnées FedaPay
+  fedapayTransactionId String? // ID de transaction FedaPay
+  fedapayCustomerId    String? // ID client FedaPay
+
+  createdAt        DateTime @default(now())
+  paidAt           DateTime? // Date de paiement du cashback
+}
+
+// Abonnement Premium des utilisateurs
+model Subscription {
+  id          String   @id @default(uuid())
+  clerkId     String   @unique
+  user        User     @relation(fields: [clerkId], references: [clerkId])
+
+  type        String   // "CANDIDAT" (3000 FCFA) ou "ENTREPRISE" (5000 FCFA)
+  status      String   // "ACTIVE", "CANCELLED", "EXPIRED"
+  price       Float    // Prix payé en FCFA
+
+  startDate   DateTime @default(now())
+  endDate     DateTime // Date d'expiration (startDate + 1 mois)
+
+  // Tracking affiliation
+  referredBy  String?  // Code d'affiliation utilisé lors de l'inscription
+
+  // Métadonnées FedaPay
+  fedapayTransactionId String? // ID de transaction FedaPay
+  fedapayCustomerId    String? // ID client FedaPay
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

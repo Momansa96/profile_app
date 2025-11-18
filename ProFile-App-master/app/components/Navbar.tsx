@@ -40,6 +40,7 @@ const Navbar = () => {
             { href: "/", label: "Accueil" },
             { href: "/dashboard/candidat/Opportunity", label: "Opportunités" },
             { href: "/dashboard/candidat", label: "Profiler" },
+            { href: "/dashboard/candidat/parrainage", label: "Parrainage", badge: "🎁" },
             { href: "/dashboard/candidat/Mon-Portfolio/[userId]", label: "Mon Portfolio" },
         ]
         : [
@@ -75,12 +76,16 @@ const Navbar = () => {
                                                     {link.label}
                                                     <span className="text-sm text-green-700 rounded-lg p-1 border-green-700  badge absolute -right-4  top-5">Version test</span>
                                                 </a>
+                                            ) : link.label === "Parrainage" ? (
+                                                <Link className="text-gray-500 transition hover:text-teal-700/75 flex items-center gap-1" href={link.href}>
+                                                    <span>{link.badge}</span> {link.label}
+                                                </Link>
                                             ) : (
                                                 <Link className="text-gray-500 transition hover:text-teal-700/75" href={link.href}>
                                                     {link.label}
                                                 </Link>
                                             )}
-                                            
+
                                         </li>
                                     ))}
                                     {isSignedIn && <UserButton />}
@@ -121,6 +126,10 @@ const Navbar = () => {
                                                 <span className="text-sm text-green-700 rounded-lg p-1 border-green-700  badge">Version test</span>
 
                                             </a>
+                                        ) : link.label === "Parrainage" ? (
+                                            <Link className="text-gray-500 transition hover:text-gray-500/75 flex items-center gap-1" href={link.href}>
+                                                <span>{link.badge}</span> {link.label}
+                                            </Link>
                                         ) : (
                                             <Link className="text-gray-500 transition hover:text-gray-500/75" href={link.href}>
                                                 {link.label}
